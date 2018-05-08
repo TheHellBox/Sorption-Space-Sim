@@ -14,7 +14,7 @@
 - [x] Render
   - [x] Textures
   - [x] 3D Models loading
-- [x] GameObjects
+- [x] Game Objects
   - [x] Positioning and rotations
   - [ ] Child-parent transformation
 - [ ] OpenHMD Support
