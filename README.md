@@ -3,6 +3,8 @@
 
 **Sorption** - Open Source Space Sim written on Rust
 
+*Sorption is a physical and chemical process by which one substance becomes attached to another.* - Wikipedia
+
 ### Road map
 - [ ] Universe generator
   - [x] Star/planet parameters
