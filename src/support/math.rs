@@ -1,4 +1,6 @@
 use nalgebra;
+use nalgebra::geometry::{Point3, UnitQuaternion, Quaternion, Translation3};
+use nalgebra::core::{Matrix4};
 
 pub fn m16_to_4x4(mat: [f32; 16]) -> [[f32;4]; 4]{
     let mat = [
@@ -40,4 +42,16 @@ pub fn mat_to_nalg(mat: [[f32;4]; 4]) -> nalgebra::core::MatrixN<f32, nalgebra::
 
 pub fn lerp(val1: f32, val2: f32, t: f32) -> f32{
     val1 + t * (val2 - val1)
+}
+
+pub fn calculate_transform(pos: Point3<f32>, rot: Quaternion<f32>, scale: (f32, f32, f32)) -> Matrix4<f32>{
+    let scale_matrix = Matrix4::new(
+        scale.0, 0.0, 0.0, 0.0,
+        0.0, scale.1, 0.0, 0.0,
+        0.0, 0.0, scale.2, 0.0,
+        0.0, 0.0, 0.0, 1.0,
+    );
+    let translation_matrix = Translation3::from_vector(pos.coords).to_homogeneous();
+    let rotation_matrix = UnitQuaternion::from_quaternion(rot).to_homogeneous();
+    scale_matrix * translation_matrix * rotation_matrix
 }

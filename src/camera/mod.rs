@@ -10,7 +10,7 @@ pub struct Camera{
 
 impl Camera{
     pub fn new(sx: u32, sy: u32) -> Camera{
-        let perspective = Perspective3::new((sx as f32 / sy as f32), 3.14 / 2.0, 0.1, 100.0);
+        let perspective = Perspective3::new((sx as f32 / sy as f32), 3.14 / 2.0, 0.01, 100.0);
 
         let position = Translation3::new(0.0,0.0,0.0);
         let rotation = Point3::new(0.0,0.0,0.0);
@@ -18,7 +18,7 @@ impl Camera{
         Camera{
             perspective: perspective,
             position: position,
-            rotation: UnitQuaternion::from_quaternion(Quaternion::new(0.0,0.0,0.0,1.0)),
+            rotation: UnitQuaternion::from_quaternion(Quaternion::new(0.0,0.0,1.0,0.0)),
         }
     }
     pub fn set_rot(&mut self, point: Quaternion<f32>){

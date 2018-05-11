@@ -15,7 +15,7 @@ pub struct Game_Object{
     // Rotation of the object releative to the parent's
     pub local_rotation: UnitQuaternion<f32>,
     // Parent ID
-    pub parent: u32
+    pub childs: Vec<Game_Object>
 }
 
 impl Game_Object{
@@ -28,12 +28,12 @@ impl Game_Object{
             global_position: Point3::new(0.0,0.0,0.0),
             local_position: Point3::new(0.0,0.0,0.0),
             local_rotation: UnitQuaternion::from_quaternion(Quaternion::new(0.0,0.0,0.0,1.0)),
-            parent: 0
+            childs: vec![]
         }
     }
     // Set parent of the game object
-    pub fn set_parent(&mut self, id: u32){
-        self.parent = id;
+    pub fn add_child(&mut self, child: Game_Object){
+        self.childs.push(child);
     }
     // Set render object (render::Object)
     pub fn set_render_object(&mut self, object: Object){
@@ -51,8 +51,10 @@ impl Game_Object{
         self.local_rotation = UnitQuaternion::from_quaternion(quat);
     }
 
-    pub fn update(&mut self, parent: Option<&Game_Object> ){
+    pub fn update(&mut self){
         // Update positions and other stuff, WIP
+
+        /*
         match parent{
             Some(ref x) => {
                 let delta_rot = x.local_rotation * self.local_rotation.inverse();
@@ -61,12 +63,18 @@ impl Game_Object{
             None => {
                 //self.global_position = self.local_position
             }
-        }
+        }*/
+
         match self.render_object{
             Some(ref mut x) => {
-                x.position = x.position + self.global_position.coords;
+                //x.position = x.position + self.global_position.coords;
             }
             None => {}
+        }
+        for x in &mut self.childs{
+            let rotation = (self.local_rotation * x.local_rotation);
+
+            x.update();
         }
     }
 }

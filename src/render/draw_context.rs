@@ -43,12 +43,7 @@ impl DrawContext{
             let x = &x.render_object;
             match x{
                 &Some(ref x) => {
-                    let matrix =  nalg_to_4x4(mat_to_nalg([
-                        [x.scale.0, 0.0, 0.0, 0.0],
-                        [0.0, x.scale.1, 0.0, 0.0],
-                        [0.0, 0.0, x.scale.2, 0.0],
-                        [x.position[0], x.position[1], x.position[2], 1.0f32],
-                    ]) * UnitQuaternion::from_quaternion(x.rotation).to_homogeneous());
+                    let matrix = x.transform.as_ref().to_owned();
 
                     let texture = self.render_buffer.texture_buffer.get(&x.texture).unwrap();
                     let perspective = self.camera.perspective.to_homogeneous().as_ref().to_owned();
