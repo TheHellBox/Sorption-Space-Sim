@@ -53,5 +53,5 @@ pub fn calculate_transform(pos: Point3<f32>, rot: Quaternion<f32>, scale: (f32, 
     );
     let translation_matrix = Translation3::from_vector(pos.coords).to_homogeneous();
     let rotation_matrix = UnitQuaternion::from_quaternion(rot).to_homogeneous();
-    scale_matrix * translation_matrix * rotation_matrix
+    translation_matrix * scale_matrix * rotation_matrix
 }

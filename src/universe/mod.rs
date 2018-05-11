@@ -51,11 +51,11 @@ impl Universe{
         let planet = render::Object::new(
             "./assets/models/planet.obj".to_string(),
             "./assets/textures/i_amKerbol.png".to_string(),
-            (0.1, 0.1, 0.1)
+            (4.0, 4.0, 4.0)
         );
         let mut go_planet = Game_Object::new(0, String::new());
         go_planet.set_render_object(planet);
-        go_planet.set_position(Point3::new(0.0,0.0,10.0));
+        go_planet.set_position(Point3::new(0.0,0.0,35.0));
 
         self.objects.insert(0, go_planet);
         // Creating spaceship model
@@ -95,26 +95,25 @@ impl Universe{
                 ()
             }
         }
-        match self.objects.get_mut(&1).unwrap().render_object{
+        match self.try_get_go(1){
             Some(ref mut cabin) => {
-                /*let rot_prev = cabin.rotation;
+                let rot_prev = cabin.rotation;
                 let pos_prev = cabin.position;
-                let forward = -cabin.forward() / 100.0;
+                let forward = -cabin.forward() / 20.0;
                 println!("{} \n {}", forward, rot_prev.vector());
 
-                let rot = rot_prev.lerp(&UnitQuaternion::from_euler_angles(0.0, -(window.mouse_pos.0 as f32 / 100.0), 0.0).quaternion().into_owned(), 0.4);
+                let rot = rot_prev.lerp(&UnitQuaternion::from_euler_angles(0.0, -(window.mouse_pos.0 as f32 / 100.0), 0.0), 0.4);
                 let camera_rotation = UnitQuaternion::from_euler_angles(0.0, -(window.mouse_pos.0 as f32 / 100.0), 0.0).quaternion().into_owned();
                 let cabin_pos = Point3::new(pos_prev[0] + forward[0], pos_prev[1] + forward[1], pos_prev[2] + forward[2]);
-                cabin.calculate_transform(cabin_pos, rot);
+
+                cabin.set_rotation(rot);
+                cabin.set_position(cabin_pos);
 
                 window.draw_context.camera.set_pos(Point3::new(cabin_pos[0], cabin_pos[1] + 0.20, cabin_pos[2]));
-                window.draw_context.camera.set_rot(camera_rotation);*/
+                window.draw_context.camera.set_rot(camera_rotation);
             }
             _ => {}
         }
-        let camera_rotation = UnitQuaternion::from_euler_angles(0.0, -(window.mouse_pos.0 as f32 / 100.0), 0.0).quaternion().into_owned();
-        window.draw_context.camera.set_rot(camera_rotation);
-
         let mut objects = &mut self.objects;
 
         for (_, x) in objects{

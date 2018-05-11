@@ -1,5 +1,6 @@
 use render::Object;
 use nalgebra::geometry::{Quaternion, Point3, UnitQuaternion};
+use nalgebra::Vector3;
 
 pub struct Game_Object{
     // Id of the game object
@@ -43,7 +44,13 @@ impl Game_Object{
     pub fn set_rotation(&mut self, quat: Quaternion<f32>){
         self.rotation = UnitQuaternion::from_quaternion(quat);
     }
-
+    pub fn forward(&mut self) -> Vector3<f32>{
+        use alga::linear::Transformation;
+        let mut point = Vector3::new(0.0, 0.0, 1.0);
+        let matrix = self.rotation.to_homogeneous();
+        point = matrix.transform_vector(&point);
+        point
+    }
     pub fn update(&mut self){
         // Update positions and other stuff, WIP
 
