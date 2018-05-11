@@ -51,12 +51,11 @@ impl Universe{
         let planet = render::Object::new(
             "./assets/models/planet.obj".to_string(),
             "./assets/textures/i_amKerbol.png".to_string(),
-            (0.1, 0.1, 0.1),
-            Point3::new(0.0,0.0,10.0),
-            Quaternion::new(0.0,0.0,1.0,0.0),
+            (0.1, 0.1, 0.1)
         );
         let mut go_planet = Game_Object::new(0, String::new());
         go_planet.set_render_object(planet);
+        go_planet.set_position(Point3::new(0.0,0.0,10.0));
 
         self.objects.insert(0, go_planet);
         // Creating spaceship model
@@ -64,14 +63,26 @@ impl Universe{
         let cabin = render::Object::new(
             "./assets/models/spaceship_cabin.obj".to_string(),
             "./assets/textures/spaceship_cockpit.png".to_string(),
-            (0.1, 0.1, 0.1),
-            Point3::new(0.0,-1.5,-1.0),
-            Quaternion::new(0.0,0.0,1.0,0.0)
+            (0.1, 0.1, 0.1)
         );
         let mut go_cabin = Game_Object::new(1, String::new());
         go_cabin.set_render_object(cabin);
+        go_cabin.set_position(Point3::new(0.0,-1.5,-1.0));
 
         self.objects.insert(1, go_cabin);
+    }
+    //Create new game object with id and name
+    pub fn add_game_object(&mut self, id: u32, name: String){
+        let obj = Game_Object::new(0, String::new());
+        self.objects.insert(id, obj);
+    }
+    // Get existing game object
+    pub fn get_go(&mut self, id: u32) -> &mut Game_Object{
+        self.objects.get_mut(&id).unwrap()
+    }
+    // Get game object as option
+    pub fn try_get_go(&mut self, id: u32) -> Option<&mut Game_Object>{
+        self.objects.get_mut(&id)
     }
     // Updating universe
     pub fn update(&mut self, window: &mut render::Window){
@@ -106,8 +117,8 @@ impl Universe{
 
         let mut objects = &mut self.objects;
 
-        for x in objects{
-
+        for (_, x) in objects{
+            x.update()
         }
     }
 }
