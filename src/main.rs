@@ -51,12 +51,18 @@ fn main() {
     universe.set_player(player);
 
     universe.init(&mut window);
+
+    let vr = false;
+
     //Starting the main loop0
     'main: loop{
         openhmd.context.update();
         window.update();
         universe.update(&mut window);
-        window.draw_context.draw_vr(&params, &universe, &openhmd);
+        match vr{
+            true => window.draw_context.draw_vr(&params, &universe, &openhmd),
+            false => window.draw_context.draw(&params, &universe)
+        }
         //println!("{:?}", window.draw_context.render_data.get_mut(&1).unwrap().rotation);
     }
 }
