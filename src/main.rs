@@ -21,7 +21,7 @@ fn main() {
 
 
     // Here we init engine
-    let mut window = render::Window::new(1280, 768, "Yet another space sim");
+    let mut window = render::Window::new(1920, 1080, "Yet another space sim");
     let mut mesh_buffer = match support::obj_loader::gen_buffer(&window.draw_context.display){
         Some(x) => x,
         None => HashMap::new()
@@ -53,6 +53,7 @@ fn main() {
     universe.init(&mut window);
     //Starting the main loop0
     'main: loop{
+        openhmd.context.update();
         window.update();
         universe.update(&mut window);
         window.draw_context.draw_vr(&params, &universe, &openhmd);

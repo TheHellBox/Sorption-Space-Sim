@@ -27,6 +27,13 @@ impl OpenHMD{
         context.update();
         let device = context.list_open_device(0);
         let config = gen_cfg(&device);
+
+        println!("\nDevice description: ");
+        println!("Vendor:   {}", context.list_gets(0, openhmd_rs::ohmd_string_value::OHMD_VENDOR));
+        println!("Product:  {}", context.list_gets(0, openhmd_rs::ohmd_string_value::OHMD_PRODUCT));
+        println!("Path:     {}\n", context.list_gets(0, openhmd_rs::ohmd_string_value::OHMD_PATH));
+        println!("Opening device {}...", 0);
+
         OpenHMD{
             context: context,
             device: device,
@@ -36,15 +43,13 @@ impl OpenHMD{
     pub fn get_view(&self) -> (Matrix4<f32>, Matrix4<f32>){
         use support::math::m16_to_4x4;
         use support::math::mat16_to_nalg;
-        let view_left = mat16_to_nalg( match self.device.getf(openhmd_rs::ohmd_float_value::OHMD_LEFT_EYE_GL_MODELVIEW_MATRIX){
-            Some(x) => x,
-            None => [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0, 0.0, 0.0, 0.0,0.0, 0.0, 0.0, 0.0]
-        });
+        let view_left = mat16_to_nalg(self.device.getf(openhmd_rs::ohmd_float_value::OHMD_LEFT_EYE_GL_MODELVIEW_MATRIX).unwrap());
+        println!("{:?}", self.device.getf(openhmd_rs::ohmd_float_value::OHMD_LEFT_EYE_GL_MODELVIEW_MATRIX).unwrap());
         let view_right = mat16_to_nalg( match self.device.getf(openhmd_rs::ohmd_float_value::OHMD_RIGHT_EYE_GL_MODELVIEW_MATRIX){
             Some(x) => x,
             None => [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0, 0.0, 0.0, 0.0,0.0, 0.0, 0.0, 0.0]
         });
-        (view_left, view_right)
+        (view_right, view_left)
     }
 }
 
@@ -55,6 +60,7 @@ pub fn gen_cfg(device: &openhmd_rs::Device) -> HMDParams{
         Some(x) => x,
         _ => 1280
     } as u32;
+    println!("{}", scrw);
     let scrh = match device.geti(openhmd_rs::ohmd_int_value::OHMD_SCREEN_VERTICAL_RESOLUTION){
         Some(x) => x,
         _ => 800
@@ -63,7 +69,10 @@ pub fn gen_cfg(device: &openhmd_rs::Device) -> HMDParams{
     // Calculating HMD params
     let scr_size_w = match device.getf(openhmd_rs::ohmd_float_value::OHMD_SCREEN_HORIZONTAL_SIZE){
         Some(x) => x[0],
-        _ => 0.149760
+        _ => {
+            println!("Something is wrong!");
+            0.149760
+        }
     };
     let scr_size_h = match device.getf(openhmd_rs::ohmd_float_value::OHMD_SCREEN_VERTICAL_SIZE ){
         Some(x) => x[0],
