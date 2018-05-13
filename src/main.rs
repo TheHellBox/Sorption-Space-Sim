@@ -5,17 +5,20 @@ extern crate rand;
 extern crate nalgebra;
 extern crate alga;
 extern crate image;
+extern crate openhmd_rs;
 
 mod universe;
 mod player;
 mod render;
 mod support;
 mod camera;
+mod openhmd;
 
 use std::collections::HashMap;
 
 fn main() {
     use nalgebra::geometry::{Quaternion, Point3};
+
 
     // Here we init engine
     let mut window = render::Window::new(1280, 768, "Yet another space sim");
@@ -33,17 +36,13 @@ fn main() {
     window.draw_context.render_buffer.set_texture_buf(texture_buffer);
     window.draw_context.render_buffer.add_shader("simple".to_string(), program);
 
-    //FIXME: Move params to other place
-    let params = glium::DrawParameters {
-        depth: glium::Depth {
-            test: glium::DepthTest::IfLess,
-            write: true,
-            .. Default::default()
-        },
-        backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockwise,
-        .. Default::default()
-    };
+    let ohmd_shaders = glium::Program::from_source(&window.draw_context.display, &render::SHADER_DISTORTION_VERT, &render::SHADER_DISTORTION_FRAG, None).unwrap();
 
+    window.draw_context.render_buffer.add_shader("ohmd".to_string(), ohmd_shaders);
+
+    let params = render::get_params();
+
+    let openhmd = openhmd::OpenHMD::new();
     // And here we init game
     println!("\nWelcome to yet another space sim! We are already created commader for you: \n");
     let mut universe = universe::Universe::new([0, 0, 0, 1]);
@@ -56,7 +55,7 @@ fn main() {
     'main: loop{
         window.update();
         universe.update(&mut window);
-        window.draw_context.draw(&params, &universe);
+        window.draw_context.draw_vr(&params, &universe, &openhmd);
         //println!("{:?}", window.draw_context.render_data.get_mut(&1).unwrap().rotation);
     }
 }

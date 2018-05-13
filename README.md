@@ -17,7 +17,7 @@
 - [x] Game Objects
   - [x] Positioning and rotations
   - [ ] Child-parent transformation
-- [ ] OpenHMD Support
+- [x] OpenHMD Support
 - [ ] Huperjumps
 - [ ] Multiplayer
 - [ ] Landing on planets

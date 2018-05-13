@@ -47,6 +47,7 @@ impl Universe{
             },
             None => ()
         }
+
         // Creating planet model
         let planet = render::Object::new(
             "./assets/models/planet.obj".to_string(),
@@ -58,8 +59,8 @@ impl Universe{
         go_planet.set_position(Point3::new(0.0,0.0,35.0));
 
         self.objects.insert(0, go_planet);
-        // Creating spaceship model
 
+        // Creating spaceship model
         let cabin = render::Object::new(
             "./assets/models/spaceship_cabin.obj".to_string(),
             "./assets/textures/spaceship_cockpit.png".to_string(),
@@ -100,7 +101,6 @@ impl Universe{
                 let rot_prev = cabin.rotation;
                 let pos_prev = cabin.position;
                 let forward = -cabin.forward() / 20.0;
-                println!("{} \n {}", forward, rot_prev.vector());
 
                 let rot = rot_prev.lerp(&UnitQuaternion::from_euler_angles(0.0, -(window.mouse_pos.0 as f32 / 100.0), 0.0), 0.4);
                 let camera_rotation = UnitQuaternion::from_euler_angles(0.0, -(window.mouse_pos.0 as f32 / 100.0), 0.0).quaternion().into_owned();

@@ -27,10 +27,10 @@ impl Camera{
     pub fn set_pos(&mut self, point: Point3<f32>){
         self.position.vector = -point.coords;
     }
-    pub fn view(&self) -> [[f32; 4]; 4]{
+    pub fn view(&self) -> Matrix4<f32>{
         let mut translation_matrix: Matrix4<f32> = self.position.to_homogeneous();
         let mut rotation: Matrix4<f32> = self.rotation.to_homogeneous();
         let mut mat = (rotation * translation_matrix);
-        mat.into()
+        mat
     }
 }
