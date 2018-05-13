@@ -43,7 +43,10 @@ impl OpenHMD{
     pub fn get_view(&self) -> (Matrix4<f32>, Matrix4<f32>){
         use support::math::m16_to_4x4;
         use support::math::mat16_to_nalg;
-        let view_left = mat16_to_nalg(self.device.getf(openhmd_rs::ohmd_float_value::OHMD_LEFT_EYE_GL_MODELVIEW_MATRIX).unwrap());
+        let view_left = mat16_to_nalg( match self.device.getf(openhmd_rs::ohmd_float_value::OHMD_LEFT_EYE_GL_MODELVIEW_MATRIX){
+            Some(x) => x,
+            None => [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0, 0.0, 0.0, 0.0,0.0, 0.0, 0.0, 0.0]
+        });
         println!("{:?}", self.device.getf(openhmd_rs::ohmd_float_value::OHMD_LEFT_EYE_GL_MODELVIEW_MATRIX).unwrap());
         let view_right = mat16_to_nalg( match self.device.getf(openhmd_rs::ohmd_float_value::OHMD_RIGHT_EYE_GL_MODELVIEW_MATRIX){
             Some(x) => x,
