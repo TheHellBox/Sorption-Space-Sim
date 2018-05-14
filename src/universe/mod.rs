@@ -1,12 +1,14 @@
 pub mod star;
 pub mod planet;
 pub mod gameobject;
+pub mod game;
 
 use glium;
 use render;
 use player;
 use nalgebra::geometry::{Point3, UnitQuaternion, Quaternion};
 use std::collections::HashMap;
+use self::game::controls::Controls;
 
 use self::gameobject::Game_Object;
 
@@ -14,6 +16,8 @@ use self::gameobject::Game_Object;
 pub struct Universe{
     pub seed: [usize; 4],
     pub player: Option<player::Player>,
+    // Move away
+    pub controls: Controls,
     //              ID, the object itself
     pub objects: HashMap<u32, Game_Object>
 }
@@ -24,6 +28,7 @@ impl Universe{
         Universe{
             seed: seed,
             player: None,
+            controls: Controls::new(),
             objects: HashMap::new()
         }
     }
@@ -96,15 +101,24 @@ impl Universe{
                 ()
             }
         }
+        self.controls.update(&window.events);
+
+        let forward = self.controls.forward - self.controls.back;
+        let right = self.controls.right - self.controls.left;
+        let up = self.controls.up - self.controls.down;
+
         match self.try_get_go(1){
             Some(ref mut cabin) => {
                 let rot_prev = cabin.rotation;
                 let pos_prev = cabin.position;
-                let forward = -cabin.forward() / 20.0;
+                let forward = (cabin.forward() / 20.0) * forward;
+                let right = (cabin.right() / 20.0) * right;
+                let up = (cabin.up() / 20.0) * up;
+                let direcion = forward + right + up;
 
-                let rot = rot_prev.lerp(&UnitQuaternion::from_euler_angles(0.0, -(window.mouse_pos.0 as f32 / 100.0), 0.0), 0.4);
+                let rot = rot_prev.lerp(&UnitQuaternion::from_euler_angles(0.0, -(window.mouse_pos.0 as f32 / 100.0), 0.0), 0.04);
                 let camera_rotation = UnitQuaternion::from_euler_angles(0.0, -(window.mouse_pos.0 as f32 / 100.0), 0.0).quaternion().into_owned();
-                let cabin_pos = Point3::new(pos_prev[0] + forward[0], pos_prev[1] + forward[1], pos_prev[2] + forward[2]);
+                let cabin_pos = Point3::new(pos_prev[0] + direcion[0], pos_prev[1] + direcion[1], pos_prev[2] + direcion[2]);
 
                 cabin.set_rotation(rot);
                 cabin.set_position(cabin_pos);

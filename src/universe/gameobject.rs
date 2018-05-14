@@ -45,8 +45,17 @@ impl Game_Object{
         self.rotation = UnitQuaternion::from_quaternion(quat);
     }
     pub fn forward(&mut self) -> Vector3<f32>{
+        self.direction(Vector3::new(0.0, 0.0, -1.0))
+    }
+    pub fn right(&mut self) -> Vector3<f32>{
+        self.direction(Vector3::new(-1.0, 0.0, 0.0))
+    }
+    pub fn up(&mut self) -> Vector3<f32>{
+        self.direction(Vector3::new(0.0, 1.0, 0.0))
+    }
+    pub fn direction(&mut self, vec: Vector3<f32>) -> Vector3<f32>{
         use alga::linear::Transformation;
-        let mut point = Vector3::new(0.0, 0.0, 1.0);
+        let mut point = vec;
         let matrix = self.rotation.to_homogeneous();
         point = matrix.transform_vector(&point);
         point
