@@ -103,33 +103,20 @@ impl Universe{
         }
         self.controls.update(&window.events);
 
-        let forward = self.controls.forward - self.controls.back;
-        let right = self.controls.right - self.controls.left;
-        let up = self.controls.up - self.controls.down;
+        let controls = self.controls;
 
         match self.try_get_go(1){
             Some(ref mut cabin) => {
-                let rot_prev = cabin.rotation;
-                let pos_prev = cabin.position;
-                let forward = (cabin.forward() / 20.0) * forward;
-                let right = (cabin.right() / 20.0) * right;
-                let up = (cabin.up() / 20.0) * up;
-                let direcion = forward + right + up;
-
-                let rot = rot_prev.lerp(&UnitQuaternion::from_euler_angles(0.0, -(window.mouse_pos.0 as f32 / 100.0), 0.0), 0.04);
+                let (mut cabin_pos, rotation) = game::cabin::cabin_update(cabin, window, &controls);
+                cabin_pos[1] += 0.20;
                 let camera_rotation = UnitQuaternion::from_euler_angles(0.0, -(window.mouse_pos.0 as f32 / 100.0), 0.0).quaternion().into_owned();
-                let cabin_pos = Point3::new(pos_prev[0] + direcion[0], pos_prev[1] + direcion[1], pos_prev[2] + direcion[2]);
-
-                cabin.set_rotation(rot);
-                cabin.set_position(cabin_pos);
-
-                window.draw_context.camera.set_pos(Point3::new(cabin_pos[0], cabin_pos[1] + 0.20, cabin_pos[2]));
+                window.draw_context.camera.set_pos(cabin_pos);
                 window.draw_context.camera.set_rot(camera_rotation);
             }
             _ => {}
         }
-        let mut objects = &mut self.objects;
 
+        let mut objects = &mut self.objects;
         for (_, x) in objects{
             x.update()
         }

@@ -1,5 +1,6 @@
 use glium::glutin::Event;
 
+#[derive(Copy, Clone)]
 pub struct Controls{
     pub up: f32,
     pub down: f32,
