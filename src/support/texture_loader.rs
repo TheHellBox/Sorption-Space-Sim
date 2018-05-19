@@ -1,4 +1,3 @@
-use glium;
 use image;
 
 use glium::texture::Texture2d;
@@ -8,7 +7,6 @@ use std::collections::HashMap;
 pub fn load(path: String, disp: &Display) -> Texture2d{
     use std::path::Path;
     use glium::texture::RawImage2d;
-    use image::GenericImage;
 
     let img = image::open(Path::new(&path)).unwrap().to_rgba();
     let dis = img.dimensions();

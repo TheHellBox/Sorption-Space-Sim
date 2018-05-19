@@ -3,14 +3,13 @@ pub mod planet;
 pub mod gameobject;
 pub mod game;
 
-use glium;
 use render;
 use player;
-use nalgebra::geometry::{Point3, UnitQuaternion, Quaternion};
+use nalgebra::geometry::{Point3, UnitQuaternion};
 use std::collections::HashMap;
 use self::game::controls::Controls;
 
-use self::gameobject::Game_Object;
+use self::gameobject::GameObject;
 
 // Universe, place where you can exist
 pub struct Universe{
@@ -19,7 +18,7 @@ pub struct Universe{
     // Move away
     pub controls: Controls,
     //              ID, the object itself
-    pub objects: HashMap<u32, Game_Object>
+    pub objects: HashMap<u32, GameObject>
 }
 
 impl Universe{
@@ -55,11 +54,11 @@ impl Universe{
 
         // Creating planet model
         let planet = render::Object::new(
-            "./assets/models/planet.obj".to_string(),
+            "./assets/models/asteroids.obj".to_string(),
             "./assets/textures/i_amKerbol.png".to_string(),
             (4.0, 4.0, 4.0)
         );
-        let mut go_planet = Game_Object::new(0, String::new());
+        let mut go_planet = GameObject::new(0, String::new());
         go_planet.set_render_object(planet);
         go_planet.set_position(Point3::new(0.0,0.0,35.0));
 
@@ -71,7 +70,7 @@ impl Universe{
             "./assets/textures/spaceship_cockpit.png".to_string(),
             (0.1, 0.1, 0.1)
         );
-        let mut go_cabin = Game_Object::new(1, String::new());
+        let mut go_cabin = GameObject::new(1, String::new());
         go_cabin.set_render_object(cabin);
         go_cabin.set_position(Point3::new(0.0,-1.5,-1.0));
 
@@ -79,20 +78,19 @@ impl Universe{
     }
     //Create new game object with id and name
     pub fn add_game_object(&mut self, id: u32, name: String){
-        let obj = Game_Object::new(0, String::new());
+        let obj = GameObject::new(0, String::new());
         self.objects.insert(id, obj);
     }
     // Get existing game object
-    pub fn get_go(&mut self, id: u32) -> &mut Game_Object{
+    pub fn get_go(&mut self, id: u32) -> &mut GameObject{
         self.objects.get_mut(&id).unwrap()
     }
     // Get game object as option
-    pub fn try_get_go(&mut self, id: u32) -> Option<&mut Game_Object>{
+    pub fn try_get_go(&mut self, id: u32) -> Option<&mut GameObject>{
         self.objects.get_mut(&id)
     }
     // Updating universe
     pub fn update(&mut self, window: &mut render::Window){
-        use glium::glutin::Event::WindowEvent;
         match self.player{
             Some(ref mut x) => {
                 x.update(self.seed);
@@ -101,22 +99,21 @@ impl Universe{
                 ()
             }
         }
-        self.controls.update(&window.events);
+        self.controls.update(&window);
 
         let controls = self.controls;
 
         match self.try_get_go(1){
             Some(ref mut cabin) => {
-                let (mut cabin_pos, rotation) = game::cabin::cabin_update(cabin, window, &controls);
-                cabin_pos[1] += 0.20;
-                let camera_rotation = UnitQuaternion::from_euler_angles(0.0, -(window.mouse_pos.0 as f32 / 100.0), 0.0).quaternion().into_owned();
+                let (mut cabin_pos, _) = game::cabin::cabin_update(cabin, window, &controls);
+                let camera_rotation = UnitQuaternion::from_euler_angles((controls.rel.1 / 100.0), (controls.rel.0 / 100.0), controls.roll).quaternion().into_owned();
                 window.draw_context.camera.set_pos(cabin_pos);
                 window.draw_context.camera.set_rot(camera_rotation);
             }
             _ => {}
         }
 
-        let mut objects = &mut self.objects;
+        let objects = &mut self.objects;
         for (_, x) in objects{
             x.update()
         }

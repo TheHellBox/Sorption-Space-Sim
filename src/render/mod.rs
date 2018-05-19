@@ -13,7 +13,7 @@ use std::collections::hash_map::HashMap;
 
 use camera::Camera;
 
-use nalgebra::geometry::{Quaternion, Point3, UnitQuaternion, Translation3};
+use nalgebra::geometry::{Quaternion, Point3};
 use nalgebra::core::{Vector3, Matrix4};
 
 #[derive(Copy, Clone)]
@@ -30,11 +30,16 @@ pub struct OhmdVertex {
 }
 implement_vertex!(OhmdVertex, coords);
 
+pub struct Mouse{
+    pub position: (i32, i32),
+    pub releative: (i32, i32)
+}
+
 pub struct Window{
     pub events_loop: EventsLoop,
     pub draw_context: DrawContext,
     pub events: Vec<Event>,
-    pub mouse_pos: (u32, u32)
+    pub mouse: Mouse
 }
 // Object that can be rendered
 pub struct Object{
@@ -70,6 +75,21 @@ impl Object{
         point
     }
 }
+
+impl Mouse{
+    pub fn new() -> Mouse{
+        Mouse{
+            position: (0, 0),
+            releative: (0, 0)
+        }
+    }
+    pub fn update(&mut self, new_pos: (i32, i32)){
+        self.releative.0 = self.position.0 - new_pos.0;
+        self.releative.1 = self.position.1 - new_pos.1;
+        self.position = new_pos;
+    }
+}
+
 impl Window {
     pub fn new(sizex: u32, sizey: u32, title: &'static str) -> Window{
 
@@ -82,6 +102,7 @@ impl Window {
             .with_depth_buffer(24);
 
         let display = Display::new(window, context, &events_loop).unwrap();
+        let _ = display.gl_window().window().set_cursor_state(glutin::CursorState::Hide);
 
         let camera = Camera::new(sizex, sizey);
 
@@ -98,7 +119,7 @@ impl Window {
                 scr_res: (sizex, sizey)
             },
             events: vec![],
-            mouse_pos: (0, 0)
+            mouse: Mouse::new()
         }
     }
 
@@ -111,23 +132,22 @@ impl Window {
         use glium::glutin;
 
         let mut events = vec![];
-        let mut mouse_pos = (-1.0, -1.0);
+        let mut mouse_pos = self.mouse.position;
 
         self.events_loop.poll_events(|ev| {
             events.push(ev.clone());
             match ev{
                 WindowEvent { ref event, .. } => match event{
                     &glutin::WindowEvent::CursorMoved{position, ..} => {
-                        mouse_pos = position;
+                        mouse_pos = (position.0 as i32, position.1 as i32);
                     },
                     _ => {}
                 },
                 _ => {}
             }
         });
-        if mouse_pos != (-1.0, -1.0){
-            self.mouse_pos.0 = mouse_pos.0 as u32;
-            self.mouse_pos.1 = mouse_pos.1 as u32;
+        if mouse_pos != (-1, -1){
+            self.mouse.update((mouse_pos.0 as i32, mouse_pos.1 as i32));
         }
         self.events = events;
     }

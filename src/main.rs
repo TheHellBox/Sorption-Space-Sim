@@ -17,16 +17,13 @@ mod openhmd;
 use std::collections::HashMap;
 
 fn main() {
-    use nalgebra::geometry::{Quaternion, Point3};
-
-
     // Here we init engine
     let mut window = render::Window::new(1920, 1080, "Yet another space sim");
-    let mut mesh_buffer = match support::obj_loader::gen_buffer(&window.draw_context.display){
+    let mesh_buffer = match support::obj_loader::gen_buffer(&window.draw_context.display){
         Some(x) => x,
         None => HashMap::new()
     };
-    let mut texture_buffer = match support::texture_loader::gen_buffer(&window.draw_context.display){
+    let texture_buffer = match support::texture_loader::gen_buffer(&window.draw_context.display){
         Some(x) => x,
         None => HashMap::new()
     };

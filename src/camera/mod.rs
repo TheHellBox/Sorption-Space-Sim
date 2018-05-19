@@ -1,6 +1,5 @@
 
-use nalgebra::geometry::{Isometry3, Perspective3, UnitQuaternion, Quaternion, Translation, Translation3, Point3};
-use nalgebra::core::Vector3;
+use nalgebra::geometry::{Perspective3, UnitQuaternion, Quaternion, Translation3, Point3};
 use nalgebra::{Matrix4};
 pub struct Camera{
     pub perspective: Perspective3<f32>,
@@ -10,7 +9,7 @@ pub struct Camera{
 
 impl Camera{
     pub fn new(sx: u32, sy: u32) -> Camera{
-        let perspective = Perspective3::new((sx as f32 / sy as f32), 3.14 / 2.0, 0.01, 100.0);
+        let perspective = Perspective3::new((sx as f32 / sy as f32), 3.14 / 2.0, 0.01, 1000.0);
 
         let position = Translation3::new(0.0,0.0,0.0);
         let rotation = Point3::new(0.0,0.0,0.0);
@@ -28,9 +27,9 @@ impl Camera{
         self.position.vector = -point.coords;
     }
     pub fn view(&self) -> Matrix4<f32>{
-        let mut translation_matrix: Matrix4<f32> = self.position.to_homogeneous();
-        let mut rotation: Matrix4<f32> = self.rotation.to_homogeneous();
-        let mut mat = (rotation * translation_matrix);
+        let translation_matrix: Matrix4<f32> = self.position.to_homogeneous();
+        let rotation: Matrix4<f32> = self.rotation.to_homogeneous();
+        let mat = (rotation * translation_matrix);
         mat
     }
 }

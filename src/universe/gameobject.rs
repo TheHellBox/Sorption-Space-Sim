@@ -2,7 +2,7 @@ use render::Object;
 use nalgebra::geometry::{Quaternion, Point3, UnitQuaternion};
 use nalgebra::Vector3;
 
-pub struct Game_Object{
+pub struct GameObject{
     // Id of the game object
     pub id: u32,
     // Name of the Game Object
@@ -14,13 +14,13 @@ pub struct Game_Object{
     // Rotation of the object releative to the parent's
     pub rotation: UnitQuaternion<f32>,
     // Parent ID
-    pub childs: Vec<Game_Object>
+    pub childs: Vec<GameObject>
 }
 
-impl Game_Object{
+impl GameObject{
     // Create new game object
-    pub fn new(id: u32, name: String) -> Game_Object{
-        Game_Object{
+    pub fn new(id: u32, name: String) -> GameObject{
+        GameObject{
             id: id,
             name: name,
             render_object: None,
@@ -30,7 +30,7 @@ impl Game_Object{
         }
     }
     // Set parent of the game object
-    pub fn add_child(&mut self, child: Game_Object){
+    pub fn add_child(&mut self, child: GameObject){
         self.childs.push(child);
     }
     // Set render object (render::Object)
@@ -82,7 +82,7 @@ impl Game_Object{
             None => {}
         }
         for x in &mut self.childs{
-            let rotation = (self.rotation * x.rotation);
+            //let rotation = (self.rotation * x.rotation);
 
             x.update();
         }
