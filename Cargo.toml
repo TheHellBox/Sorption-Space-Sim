@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["TheHellBox <thehellbox11@gmail.com>"]
 
 [dependencies]
-rand = "0.4"
+rand = "0.4.2"
 nalgebra="0.14.1"
 alga = "0.5"
 glium="0.20.0"

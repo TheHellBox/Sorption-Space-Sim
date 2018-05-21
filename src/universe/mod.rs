@@ -37,33 +37,50 @@ impl Universe{
         self.player = Some(player);
     }
     // Generate star with seed of the universe
-    pub fn get_star(&mut self, coords: Point3<usize>) -> Option<star::Star>{
+    pub fn get_star(&self, coords: Point3<usize>) -> Option<star::Star>{
         star::Star::gen(coords, &self.seed)
     }
     // Prepare universe for playing
     pub fn init(&mut self, window: &mut render::Window){
-
+        let mut star_coords = Point3::new(0, 0 ,0);
         //Add default items to player's inventory
         match self.player{
             Some(ref mut player) => {
                 player.add_res("Hydrogen".to_string(), 100);
                 player.add_res("Tokens".to_string(), 2000);
                 player.print_stats();
+                star_coords = player.star_coords;
             },
             None => ()
         }
+        let star = self.get_star(star_coords).unwrap();
+        for x in star.planets{
+            // Creating planet model
+            let planet = render::Object::new(
+                support::obj_loader::load_as_vb("./assets/models/planet.obj".to_string(), &window.draw_context.display),
+                x.gen_tex(&window.draw_context.display),
+                (4.0, 4.0, 4.0)
+            );
+            let mut go_planet = GameObject::new((10 + x.num) as u32, String::new());
+            go_planet.set_render_object(planet);
+            go_planet.set_position(Point3::new(0.0,0.0,35.0 * x.num as f32));
+            self.objects.insert((10 + x.num) as u32, go_planet);
 
-        // Creating planet model
-        let planet = render::Object::new(
-            support::obj_loader::load_as_vb("./assets/models/planet.obj".to_string(), &window.draw_context.display),
-            planet::gen_texture(&[0, 1, 0], &window.draw_context.display),
-            (4.0, 4.0, 4.0)
-        );
-        let mut go_planet = GameObject::new(0, String::new());
-        go_planet.set_render_object(planet);
-        go_planet.set_position(Point3::new(0.0,0.0,35.0));
+            if x.rings {
+                // Creating rings model
+                let rings = render::Object::new(
+                    support::obj_loader::load_as_vb("./assets/models/rings.obj".to_string(), &window.draw_context.display),
+                    support::texture_loader::load("./assets/textures/spaceship_cockpit.png".to_string(), &window.draw_context.display),
+                    (4.0, 4.0, 4.0)
+                );
+                let mut rings_go = GameObject::new((10 + x.num) as u32, String::new());
+                rings_go.set_render_object(rings);
+                rings_go.set_position(Point3::new(0.0,0.0,35.0 * x.num as f32));
+                self.objects.insert((30 + x.num) as u32, rings_go);
+            }
 
-        self.objects.insert(0, go_planet);
+        }
+
 
         // Creating spaceship model
         let cabin = render::Object::new(
