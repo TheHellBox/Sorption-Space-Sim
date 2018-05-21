@@ -41,6 +41,8 @@ pub struct Window{
     pub events_loop: EventsLoop,
     pub draw_context: DrawContext,
     pub events: Vec<Event>,
+    pub focused: bool,
+    pub res: (u32, u32),
     pub mouse: Mouse
 }
 // Object that can be rendered
@@ -119,6 +121,8 @@ impl Window {
                 scr_res: (sizex, sizey)
             },
             events: vec![],
+            focused: true,
+            res: (sizex, sizey),
             mouse: Mouse::new()
         }
     }
@@ -126,14 +130,16 @@ impl Window {
     pub fn get_display(&mut self) -> (&mut DrawContext, &mut EventsLoop){
         (&mut self.draw_context, &mut self.events_loop)
     }
-
+    pub fn set_mouse_pos(&mut self, x: i32, y: i32){
+        let _ = self.draw_context.display.gl_window().window().set_cursor_position(x, y);
+    }
     pub fn update(&mut self){
         use glium::glutin::Event::WindowEvent;
         use glium::glutin;
 
         let mut events = vec![];
         let mut mouse_pos = self.mouse.position;
-
+        let mut focused = None;
         self.events_loop.poll_events(|ev| {
             events.push(ev.clone());
             match ev{
@@ -141,11 +147,17 @@ impl Window {
                     &glutin::WindowEvent::CursorMoved{position, ..} => {
                         mouse_pos = (position.0 as i32, position.1 as i32);
                     },
+                    &glutin::WindowEvent::Focused(focus) => {
+                        focused = Some(focus);
+                    },
                     _ => {}
                 },
                 _ => {}
             }
         });
+        if focused.is_some(){
+            self.focused = focused.unwrap();
+        }
         if mouse_pos != (-1, -1){
             self.mouse.update((mouse_pos.0 as i32, mouse_pos.1 as i32));
         }

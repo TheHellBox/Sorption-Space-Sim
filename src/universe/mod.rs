@@ -117,7 +117,7 @@ impl Universe{
                 ()
             }
         }
-        self.controls.update(&window);
+        self.controls.update(window);
 
         let controls = self.controls;
 

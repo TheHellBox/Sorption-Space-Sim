@@ -30,7 +30,7 @@ impl Controls{
             rel: (0.0, 0.0)
         }
     }
-    pub fn update(&mut self, window: &Window){
+    pub fn update(&mut self, window: &mut Window){
         use glium::glutin;
         use glium::glutin::{Event, WindowEvent};
         let mut roll = 0.0;
@@ -90,5 +90,15 @@ impl Controls{
         let rel = window.mouse.releative;
         self.rel.0 += rel.0 as f32;
         self.rel.1 += rel.1 as f32;
+        let scr_res = window.res;
+        if window.focused{
+            window.set_mouse_pos((scr_res.0 / 2) as i32, (scr_res.0 / 2) as i32);
+        }
+        window.mouse.update(((scr_res.0 / 2) as i32, (scr_res.0 / 2) as i32));
+        let rel = window.mouse.releative;
+        self.rel.0 -= rel.0 as f32;
+        self.rel.1 -= rel.1 as f32;
+
+        println!("{:?}", self.rel);
     }
 }
