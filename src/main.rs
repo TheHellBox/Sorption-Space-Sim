@@ -6,6 +6,7 @@ extern crate nalgebra;
 extern crate alga;
 extern crate image;
 extern crate openhmd_rs;
+extern crate noise;
 
 mod universe;
 mod player;
@@ -19,18 +20,8 @@ use std::collections::HashMap;
 fn main() {
     // Here we init engine
     let mut window = render::Window::new(1920, 1080, "Yet another space sim");
-    let mesh_buffer = match support::obj_loader::gen_buffer(&window.draw_context.display){
-        Some(x) => x,
-        None => HashMap::new()
-    };
-    let texture_buffer = match support::texture_loader::gen_buffer(&window.draw_context.display){
-        Some(x) => x,
-        None => HashMap::new()
-    };
     //Building shaders
     let program = glium::Program::from_source(&window.draw_context.display, &render::SHADER_SIMPLE_VERT, &render::SHADER_SIMPLE_FRAG, None).unwrap();
-    window.draw_context.render_buffer.set_vert_bufs(mesh_buffer);
-    window.draw_context.render_buffer.set_texture_buf(texture_buffer);
     window.draw_context.render_buffer.add_shader("simple".to_string(), program);
 
     let ohmd_shaders = glium::Program::from_source(&window.draw_context.display, &render::SHADER_DISTORTION_VERT, &render::SHADER_DISTORTION_FRAG, None).unwrap();
@@ -48,7 +39,6 @@ fn main() {
     universe.set_player(player);
 
     universe.init(&mut window);
-
     let vr = false;
 
     //Starting the main loop0

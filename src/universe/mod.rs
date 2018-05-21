@@ -10,6 +10,7 @@ use std::collections::HashMap;
 use self::game::controls::Controls;
 
 use self::gameobject::GameObject;
+use support;
 
 // Universe, place where you can exist
 pub struct Universe{
@@ -54,8 +55,8 @@ impl Universe{
 
         // Creating planet model
         let planet = render::Object::new(
-            "./assets/models/asteroids.obj".to_string(),
-            "./assets/textures/i_amKerbol.png".to_string(),
+            support::obj_loader::load_as_vb("./assets/models/planet.obj".to_string(), &window.draw_context.display),
+            planet::gen_texture(&[0, 1, 0], &window.draw_context.display),
             (4.0, 4.0, 4.0)
         );
         let mut go_planet = GameObject::new(0, String::new());
@@ -66,8 +67,8 @@ impl Universe{
 
         // Creating spaceship model
         let cabin = render::Object::new(
-            "./assets/models/spaceship_cabin.obj".to_string(),
-            "./assets/textures/spaceship_cockpit.png".to_string(),
+            support::obj_loader::load_as_vb("./assets/models/spaceship_cabin.obj".to_string(), &window.draw_context.display),
+            support::texture_loader::load("./assets/textures/spaceship_cockpit.png".to_string(), &window.draw_context.display),
             (0.1, 0.1, 0.1)
         );
         let mut go_cabin = GameObject::new(1, String::new());

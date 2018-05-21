@@ -3,6 +3,7 @@ use image;
 use glium::texture::Texture2d;
 use glium::Display;
 use std::collections::HashMap;
+use image::{ImageBuffer, Rgb};
 
 pub fn load(path: String, disp: &Display) -> Texture2d{
     use std::path::Path;
@@ -14,6 +15,15 @@ pub fn load(path: String, disp: &Display) -> Texture2d{
     let tex = Texture2d::new(disp, glium_raw_tex).unwrap();
     tex
 }
+
+pub fn into_texture(img: ImageBuffer<Rgb<u8>, Vec<u8>>, disp: &Display) -> Texture2d{
+    use glium::texture::RawImage2d;
+    let dis = img.dimensions();
+    let glium_raw_tex = RawImage2d::from_raw_rgb_reversed(&img.into_raw(), dis);
+    let tex = Texture2d::new(disp, glium_raw_tex).unwrap();
+    tex
+}
+
 
 pub fn gen_buffer(disp: &Display) -> Option<HashMap<String, Texture2d>>{
     use std::fs;

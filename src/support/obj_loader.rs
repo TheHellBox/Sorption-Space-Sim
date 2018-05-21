@@ -41,6 +41,12 @@ pub fn load(data: String) -> Vec<Vertex> {
     vertex_data
 }
 
+pub fn load_as_vb(data: String, disp: &Display) -> VertexBufferAny{
+    let raw = load(data);
+    let mesh = glium::vertex::VertexBuffer::new(disp, &raw).unwrap().into_vertex_buffer_any();
+    mesh
+}
+
 pub fn gen_buffer(disp: &Display) -> Option<HashMap<String, VertexBufferAny>>{
     use std::fs;
     use std::path::Path;

@@ -10,18 +10,10 @@ use universe::Universe;
 use openhmd::OpenHMD;
 
 pub struct RenderBuffer{
-    pub vertex_buffers: HashMap<String, VertexBufferAny>,
-    pub texture_buffer: HashMap<String, Texture2d>,
     pub shaders: HashMap<String, Program>
 }
 
 impl RenderBuffer{
-    pub fn set_vert_bufs(&mut self, vrt_buf: HashMap<String, VertexBufferAny>){
-        self.vertex_buffers = vrt_buf;
-    }
-    pub fn set_texture_buf(&mut self, tex_buf: HashMap<String, Texture2d>){
-        self.texture_buffer = tex_buf;
-    }
     pub fn add_shader(&mut self, name: String, prog: Program){
         self.shaders.insert(name, prog);
     }
@@ -47,9 +39,9 @@ impl DrawContext{
             match x{
                 &Some(ref x) => {
                     let matrix = x.transform.as_ref().to_owned();
-                    let texture = self.render_buffer.texture_buffer.get(&x.texture).unwrap();
+                    let texture = &x.texture;
                     target.draw(
-                        self.render_buffer.vertex_buffers.get(&x.model).unwrap(),
+                        &x.model,
                         &glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList),
                         self.render_buffer.shaders.get("simple").unwrap(),
                         &uniform! { matrix: matrix, perspective: perspective, view: view, tex: texture, wrap: [x.tex_wrap.0, x.tex_wrap.1]},
@@ -97,11 +89,11 @@ impl DrawContext{
             match x{
                 &Some(ref x) => {
                     let matrix = x.transform.as_ref().to_owned();
-                    let texture = self.render_buffer.texture_buffer.get(&x.texture).unwrap();
+                    let texture = &x.texture;
 
                     for num in 0..2{
                         picking_targets[num].draw(
-                            self.render_buffer.vertex_buffers.get(&x.model).unwrap(),
+                            &x.model,
                             &glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList),
                             self.render_buffer.shaders.get("simple").unwrap(),
                             &uniform! { matrix: matrix, perspective: perspectives[num], view: mod_view[num], tex: texture, wrap: [x.tex_wrap.0, x.tex_wrap.1]},

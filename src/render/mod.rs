@@ -3,6 +3,7 @@ pub mod draw_context;
 use support::math;
 
 use self::draw_context::DrawContext;
+use glium::vertex::VertexBufferAny;
 
 use glium;
 use glium::{glutin, Display};
@@ -15,6 +16,7 @@ use camera::Camera;
 
 use nalgebra::geometry::{Quaternion, Point3};
 use nalgebra::core::{Vector3, Matrix4};
+use glium::texture::Texture2d;
 
 #[derive(Copy, Clone)]
 pub struct Vertex {
@@ -43,8 +45,8 @@ pub struct Window{
 }
 // Object that can be rendered
 pub struct Object{
-    pub model: String,
-    pub texture: String,
+    pub model: VertexBufferAny,
+    pub texture: Texture2d,
     //pub position: Point3<f32>,
     //pub rotation: Quaternion<f32>,
     pub transform: Matrix4<f32>,
@@ -52,7 +54,7 @@ pub struct Object{
     pub scale: (f32, f32, f32)
 }
 impl Object{
-    pub fn new(model: String, texture: String, scale: (f32, f32, f32)) -> Object{
+    pub fn new(model: VertexBufferAny, texture: Texture2d, scale: (f32, f32, f32)) -> Object{
         Object{
             model: model,
             texture: texture,
@@ -110,8 +112,6 @@ impl Window {
             events_loop: events_loop,
             draw_context: DrawContext{
                 display, render_buffer: draw_context::RenderBuffer{
-                    vertex_buffers: HashMap::new(),
-                    texture_buffer: HashMap::new(),
                     shaders: HashMap::new()
                 },
                 render_data: HashMap::new(),
