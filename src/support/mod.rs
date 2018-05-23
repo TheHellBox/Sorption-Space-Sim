@@ -1,7 +1,7 @@
 pub mod obj_loader;
 pub mod math;
 pub mod texture_loader;
-
+pub mod image_m;
 /*
 pub struct Settings{
     pub resolution: (u32, u32),

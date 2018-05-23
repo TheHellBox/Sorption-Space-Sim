@@ -3,17 +3,21 @@ use glium::glutin::Event;
 
 #[derive(Copy, Clone)]
 pub struct Controls{
+
     pub up: f32,
     pub down: f32,
+
     pub forward: f32,
     pub back: f32,
     pub right: f32,
     pub left: f32,
+
     pub speed: f32,
+    pub speed_mod: f32,
 
     pub roll: f32,
-
     pub rel: (f32, f32)
+
 }
 
 impl Controls{
@@ -26,8 +30,9 @@ impl Controls{
             right: 0.0,
             left: 0.0,
             speed: 1.0,
+            speed_mod: 1.0,
             roll: 0.0,
-            rel: (0.0, 0.0)
+            rel: (0.0, 0.0),
         }
     }
     pub fn update(&mut self, window: &mut Window){
@@ -42,7 +47,7 @@ impl Controls{
                             glutin::ElementState::Pressed => 1.0,
                             glutin::ElementState::Released => 0.0
                         };
-                        let modif_s = modif * self.speed;
+                        let modif_s = modif * self.speed * self.speed_mod;
 
                         match input.scancode{
                             17 => {
@@ -64,7 +69,7 @@ impl Controls{
                                 self.down = modif_s;
                             },
                             42 => {
-                                self.speed = (modif * 2.0) + 1.0;
+                                self.speed = (modif * 100.0) + 1.0;
                             },
 
                             16 => {
@@ -79,6 +84,17 @@ impl Controls{
                             }
                         }
                     },
+                    WindowEvent::MouseWheel {device_id: _, delta, ..} => {
+                        match delta{
+                            glutin::MouseScrollDelta::LineDelta(h, v) => {
+                                self.speed_mod += v;
+                                if self.speed_mod < 1.0{
+                                    self.speed_mod = 1.0;
+                                }
+                            },
+                            _ => {}
+                        }
+                    },
                     _ => {}
                 },
                 _ => {}
@@ -87,18 +103,16 @@ impl Controls{
         if roll != 0.0{
             self.roll += roll / 20.0;
         }
-        let rel = window.mouse.releative;
-        self.rel.0 += rel.0 as f32;
-        self.rel.1 += rel.1 as f32;
-        let scr_res = window.res;
         if window.focused{
+            let rel = window.mouse.releative;
+            self.rel.0 += rel.0 as f32;
+            self.rel.1 += rel.1 as f32;
+            let scr_res = window.res;
             window.set_mouse_pos((scr_res.0 / 2) as i32, (scr_res.0 / 2) as i32);
+            window.mouse.update(((scr_res.0 / 2) as i32, (scr_res.0 / 2) as i32));
+            let rel = window.mouse.releative;
+            self.rel.0 -= rel.0 as f32;
+            self.rel.1 -= rel.1 as f32;
         }
-        window.mouse.update(((scr_res.0 / 2) as i32, (scr_res.0 / 2) as i32));
-        let rel = window.mouse.releative;
-        self.rel.0 -= rel.0 as f32;
-        self.rel.1 -= rel.1 as f32;
-
-        println!("{:?}", self.rel);
     }
 }

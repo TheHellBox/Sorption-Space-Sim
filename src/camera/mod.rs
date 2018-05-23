@@ -9,7 +9,7 @@ pub struct Camera{
 
 impl Camera{
     pub fn new(sx: u32, sy: u32) -> Camera{
-        let perspective = Perspective3::new((sx as f32 / sy as f32), 3.14 / 2.0, 0.01, 1000.0);
+        let perspective = Perspective3::new((sx as f32 / sy as f32), 3.14 / 2.0, 0.01, 200000.0);
 
         let position = Translation3::new(0.0,0.0,0.0);
         let rotation = Point3::new(0.0,0.0,0.0);

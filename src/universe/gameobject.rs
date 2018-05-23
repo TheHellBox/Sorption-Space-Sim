@@ -1,4 +1,4 @@
-use render::Object;
+use render::object::Object;
 use nalgebra::geometry::{Quaternion, Point3, UnitQuaternion};
 use nalgebra::Vector3;
 
@@ -33,7 +33,7 @@ impl GameObject{
     pub fn add_child(&mut self, child: GameObject){
         self.childs.push(child);
     }
-    // Set render object (render::Object)
+    // Set render object (render::object::Object)
     pub fn set_render_object(&mut self, object: Object){
         self.render_object = Some(object);
     }

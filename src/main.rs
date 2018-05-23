@@ -21,11 +21,13 @@ fn main() {
     // Here we init engine
     let mut window = render::Window::new(1920, 1080, "Yet another space sim");
     //Building shaders
-    let program = glium::Program::from_source(&window.draw_context.display, &render::SHADER_SIMPLE_VERT, &render::SHADER_SIMPLE_FRAG, None).unwrap();
+    let program = glium::Program::from_source(&window.draw_context.display, &render::std_shaders::SHADER_SIMPLE_VERT, &render::std_shaders::SHADER_SIMPLE_FRAG, None).unwrap();
     window.draw_context.render_buffer.add_shader("simple".to_string(), program);
 
-    let ohmd_shaders = glium::Program::from_source(&window.draw_context.display, &render::SHADER_DISTORTION_VERT, &render::SHADER_DISTORTION_FRAG, None).unwrap();
+    let program = glium::Program::from_source(&window.draw_context.display, &render::std_shaders::SHADER_SIMPLE_VERT, &render::std_shaders::SHADER_SOLID_FRAG, None).unwrap();
+    window.draw_context.render_buffer.add_shader("solid".to_string(), program);
 
+    let ohmd_shaders = glium::Program::from_source(&window.draw_context.display, &render::std_shaders::SHADER_DISTORTION_VERT, &render::std_shaders::SHADER_DISTORTION_FRAG, None).unwrap();
     window.draw_context.render_buffer.add_shader("ohmd".to_string(), ohmd_shaders);
 
     let params = render::get_params();

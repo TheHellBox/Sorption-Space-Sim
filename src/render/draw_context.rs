@@ -4,7 +4,7 @@ use glium::Surface;
 use std::collections::hash_map::HashMap;
 use glium::vertex::VertexBufferAny;
 use camera::Camera;
-use render::Object;
+use render::object::Object;
 use glium::texture::Texture2d;
 use universe::Universe;
 use openhmd::OpenHMD;
@@ -43,7 +43,7 @@ impl DrawContext{
                     target.draw(
                         &x.model,
                         &glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList),
-                        self.render_buffer.shaders.get("simple").unwrap(),
+                        self.render_buffer.shaders.get(&x.shader).unwrap(),
                         &uniform! { matrix: matrix, perspective: perspective, view: view, tex: texture, wrap: [x.tex_wrap.0, x.tex_wrap.1]},
                         &params
                     ).unwrap();
@@ -95,7 +95,7 @@ impl DrawContext{
                         picking_targets[num].draw(
                             &x.model,
                             &glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList),
-                            self.render_buffer.shaders.get("simple").unwrap(),
+                            self.render_buffer.shaders.get(&x.shader).unwrap(),
                             &uniform! { matrix: matrix, perspective: perspectives[num], view: mod_view[num], tex: texture, wrap: [x.tex_wrap.0, x.tex_wrap.1]},
                             &params
                         ).unwrap();
