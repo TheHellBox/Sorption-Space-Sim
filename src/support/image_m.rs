@@ -53,7 +53,7 @@ pub fn gen_planet_texture(seed: &[usize], disp: &Display, surf_color: (f32, f32,
 
 pub fn gen_background_texture(seed: &[usize], disp: &Display) -> Texture2d{
     let (s_x, s_y) = (2048, 2048);
-    let bg_color = (0.9, 0.0, 1.0);
+    let bg_color = (0.9, 1.5, 1.0);
     let perlin = Perlin::new();
     let perlin = perlin.set_seed((seed[0] + seed[1] + seed[2]) as u32);
     let background_noise = PlaneMapBuilder::new(&perlin)
@@ -64,8 +64,8 @@ pub fn gen_background_texture(seed: &[usize], disp: &Display) -> Texture2d{
         .build();
     let background_noise_details = PlaneMapBuilder::new(&perlin)
         .set_size(s_x, s_y)
-        .set_x_bounds(-100.0, 100.0)
-        .set_y_bounds(-100.0, 100.0)
+        .set_x_bounds(-20.0, 20.0)
+        .set_y_bounds(-20.0, 20.0)
         .set_is_seamless(true)
         .build();
 
@@ -78,8 +78,8 @@ pub fn gen_background_texture(seed: &[usize], disp: &Display) -> Texture2d{
             let bg_px = (clamp(bg_px * 0.5 + 0.5, 0.0, 1.0) * 255.0) as f32;
             let bg_px_dt = (clamp(bg_px_dt * 0.5 + 0.5, 0.0, 1.0) * 255.0) as f32;
 
-            let bg_px = bg_px + bg_px_dt;
-            
+            let bg_px = bg_px + (bg_px_dt / 4.0);
+
             let pix = Rgb([(bg_px * bg_color.0) as u8, (bg_px * bg_color.1) as u8, (bg_px * bg_color.2) as u8]);
 
 

@@ -14,7 +14,9 @@ pub struct GameObject{
     // Rotation of the object releative to the parent's
     pub rotation: UnitQuaternion<f32>,
     // Parent ID
-    pub childs: Vec<GameObject>
+    pub childs: Vec<GameObject>,
+
+    pub tags: Vec<String>
 }
 
 impl GameObject{
@@ -26,7 +28,8 @@ impl GameObject{
             render_object: None,
             position: Point3::new(0.0,0.0,0.0),
             rotation: UnitQuaternion::from_quaternion(Quaternion::new(0.0,0.0,1.0,0.0)),
-            childs: vec![]
+            childs: vec![],
+            tags: vec![]
         }
     }
     // Set parent of the game object
@@ -85,6 +88,89 @@ impl GameObject{
             //let rotation = (self.rotation * x.rotation);
 
             x.update();
+        }
+    }
+}
+
+pub struct GameObjectBuilder{
+    // Id of the game object
+    pub id: u32,
+    // Name of the Game Object
+    pub name: String,
+    // Mesh
+    pub render_object: Option<Object>,
+    // Global position
+    pub position: Point3<f32>,
+    // Rotation of the object releative to the parent's
+    pub rotation: UnitQuaternion<f32>,
+    // Parent ID
+    pub childs: Vec<GameObject>,
+
+    pub tags: Vec<String>
+}
+impl GameObjectBuilder{
+    pub fn new() -> GameObjectBuilder{
+        GameObjectBuilder{
+            id: 0,
+            name: String::new(),
+            render_object: None,
+            position: Point3::new(0.0, 0.0, 0.0),
+            rotation: UnitQuaternion::from_quaternion(Quaternion::new(0.0,0.0,1.0,0.0)),
+            childs: vec![],
+            tags: vec![]
+        }
+    }
+    pub fn with_id(self, id: u32) -> Self{
+        GameObjectBuilder{
+            id,
+            ..self
+        }
+    }
+    pub fn with_name(self, name: String) -> Self{
+        GameObjectBuilder{
+            name,
+            ..self
+        }
+    }
+    pub fn with_render_object(self, render_object: Object) -> Self{
+        GameObjectBuilder{
+            render_object: Some(render_object),
+            ..self
+        }
+    }
+    pub fn with_position(self, position: Point3<f32>) -> Self{
+        GameObjectBuilder{
+            position,
+            ..self
+        }
+    }
+    pub fn with_rotation(self, rotation: UnitQuaternion<f32>) -> Self{
+        GameObjectBuilder{
+            rotation,
+            ..self
+        }
+    }
+    pub fn with_childs(self, childs: Vec<GameObject>) -> Self{
+        GameObjectBuilder{
+            childs,
+            ..self
+        }
+    }
+    pub fn with_tags(self, tags: Vec<String>) -> Self{
+        GameObjectBuilder{
+            tags,
+            ..self
+        }
+    }
+    pub fn build(self) -> GameObject{
+        GameObject{
+            id: self.id,
+            name: self.name,
+            render_object: self.render_object,
+            position: self.position,
+            rotation: self.rotation,
+            childs: self.childs,
+            tags: self.tags
         }
     }
 }

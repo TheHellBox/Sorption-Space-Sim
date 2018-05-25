@@ -7,6 +7,7 @@ use camera::Camera;
 use render::object::Object;
 use glium::texture::Texture2d;
 use universe::Universe;
+use universe::game::Game;
 use openhmd::OpenHMD;
 
 pub struct RenderBuffer{
@@ -27,26 +28,28 @@ pub struct DrawContext{
 }
 
 impl DrawContext{
-    pub fn draw(&self, params: &glium::DrawParameters, universe: &Universe){
+    pub fn draw(&self, params: &glium::DrawParameters, game: &Game){
         let mut target = self.display.draw();
         target.clear_color_and_depth((0.2, 0.2, 0.4, 1.0), 1.0);
 
         let perspective = self.camera.perspective.to_homogeneous().as_ref().to_owned();
         let view: [[f32; 4]; 4] = self.camera.view().into();
 
-        for (_, x) in &universe.objects{
+        for (_, x) in &game.universe.objects{
             let x = &x.render_object;
             match x{
                 &Some(ref x) => {
-                    let matrix = x.transform.as_ref().to_owned();
-                    let texture = &x.texture;
-                    target.draw(
-                        &x.model,
-                        &glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList),
-                        self.render_buffer.shaders.get(&x.shader).unwrap(),
-                        &uniform! { matrix: matrix, perspective: perspective, view: view, tex: texture, wrap: [x.tex_wrap.0, x.tex_wrap.1]},
-                        &params
-                    ).unwrap();
+                    if x.enabled {
+                        let matrix = x.transform.as_ref().to_owned();
+                        let texture = &x.texture;
+                        target.draw(
+                            &x.model,
+                            &glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList),
+                            self.render_buffer.shaders.get(&x.shader).unwrap(),
+                            &uniform! { matrix: matrix, perspective: perspective, view: view, tex: texture, wrap: [x.tex_wrap.0, x.tex_wrap.1]},
+                            &params
+                        ).unwrap();
+                    }
                 },
                 &None => {}
             }
@@ -54,7 +57,7 @@ impl DrawContext{
         target.finish().unwrap();
     }
 
-    pub fn draw_vr(&self, params: &glium::DrawParameters, universe: &Universe, open_hmd: &OpenHMD){
+    pub fn draw_vr(&self, params: &glium::DrawParameters, game: &Game, open_hmd: &OpenHMD){
         use glium::texture::{DepthTexture2d, Texture2d, DepthFormat, UncompressedFloatFormat, MipmapsOption};
         use glium::framebuffer::SimpleFrameBuffer;
         use render::OhmdVertex;
@@ -84,21 +87,23 @@ impl DrawContext{
 
         let perspectives: [[[f32; 4]; 4]; 2] = [open_hmd.config.projection1, open_hmd.config.projection2];
 
-        for (_, x) in &universe.objects{
+        for (_, x) in &game.universe.objects{
             let x = &x.render_object;
             match x{
                 &Some(ref x) => {
-                    let matrix = x.transform.as_ref().to_owned();
-                    let texture = &x.texture;
+                    if x.enabled {
+                        let matrix = x.transform.as_ref().to_owned();
+                        let texture = &x.texture;
 
-                    for num in 0..2{
-                        picking_targets[num].draw(
-                            &x.model,
-                            &glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList),
-                            self.render_buffer.shaders.get(&x.shader).unwrap(),
-                            &uniform! { matrix: matrix, perspective: perspectives[num], view: mod_view[num], tex: texture, wrap: [x.tex_wrap.0, x.tex_wrap.1]},
-                            &params
-                        ).unwrap();
+                        for num in 0..2{
+                            picking_targets[num].draw(
+                                &x.model,
+                                &glium::index::NoIndices(glium::index::PrimitiveType::TrianglesList),
+                                self.render_buffer.shaders.get(&x.shader).unwrap(),
+                                &uniform! { matrix: matrix, perspective: perspectives[num], view: mod_view[num], tex: texture, wrap: [x.tex_wrap.0, x.tex_wrap.1]},
+                                &params
+                            ).unwrap();
+                        }
                     }
                 },
                 &None => {}

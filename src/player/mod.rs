@@ -7,7 +7,7 @@ pub struct Player{
     pub name: String,
     pub level: u32,
     pub star_coords: Point3<usize>,
-    pub area: (u32, u32),
+    pub area: (i32, i32),
     pub planet: usize,
     pub resources: HashMap<String, u32>
 }
@@ -35,7 +35,7 @@ impl Player{
         };
         self.resources.insert(name, result + count as u32);
     }
-    pub fn set_area(&mut self, x: u32, y: u32){
+    pub fn set_area(&mut self, x: i32, y: i32){
         self.area = (x, y);
     }
     pub fn print_stats(&self){

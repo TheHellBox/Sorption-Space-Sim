@@ -9,7 +9,7 @@ use nalgebra::geometry::{Point3, UnitQuaternion};
 use std::collections::HashMap;
 use self::game::controls::Controls;
 
-use self::gameobject::GameObject;
+use self::gameobject::{GameObject, GameObjectBuilder};
 use support;
 
 // Universe, place where you can exist
@@ -19,7 +19,9 @@ pub struct Universe{
     // Move away
     pub controls: Controls,
     //              ID, the object itself
-    pub objects: HashMap<u32, GameObject>
+    pub objects: HashMap<u32, GameObject>,
+
+    pub events: Vec<String>
 }
 
 impl Universe{
@@ -29,7 +31,8 @@ impl Universe{
             seed: seed,
             player: None,
             controls: Controls::new(),
-            objects: HashMap::new()
+            objects: HashMap::new(),
+            events: vec![]
         }
     }
     // Set player to the universe
@@ -43,6 +46,7 @@ impl Universe{
     // Prepare universe for playing
     pub fn init(&mut self, window: &mut render::Window){
         let mut star_coords = Point3::new(0, 0 ,0);
+        let mut area = (0, 0);
         //Add default items to player's inventory
         match self.player{
             Some(ref mut player) => {
@@ -50,51 +54,55 @@ impl Universe{
                 player.add_res("Tokens".to_string(), 2000);
                 player.print_stats();
                 star_coords = player.star_coords;
+                area = player.area;
             },
             None => ()
         }
         let star = self.get_star(star_coords).unwrap();
         for x in star.planets{
-            let count = self.get_go_count() + 1;
+            println!("{:?}", x);
+            let enabled = x.area == area;
             // Creating planet model
             let planet = render::object::ObjectBuilder::new()
                 .with_model("./assets/models/planet.obj".to_string())
+                .with_enabled(enabled)
                 .with_scale((400.0, 400.0, 400.0))
                 .build_with_texture(&window, x.gen_tex(&window.draw_context.display));
 
-            let mut go_planet = GameObject::new(count, (&x.name).to_owned());
-            go_planet.set_render_object(planet);
-            go_planet.set_position(Point3::new(0.0,0.0,0.0));
-            self.objects.insert(count, go_planet);
+            let mut go_planet = GameObjectBuilder::new()
+                .with_name((&x.name).to_owned())
+                .with_render_object(planet)
+                .with_tags(vec!["Planet".to_string()]);
+
+            self.build_game_object(go_planet);
             if x.rings {
-                let count = self.get_go_count() + 1;
                 // Creating rings model
                 let rings = render::object::ObjectBuilder::new()
                     .with_model("./assets/models/rings.obj".to_string())
+                    .with_enabled(enabled)
                     .with_texture("./assets/textures/rings.png".to_string())
                     .with_scale((400.0, 400.0, 400.0))
                     .build(window);
 
-                let mut rings_go = GameObject::new(count, format!("{} {}", x.name, "rings"));
-                rings_go.set_render_object(rings);
-                rings_go.set_position(Point3::new(0.0,0.0,0.0));
-                self.objects.insert(count, rings_go);
+                let mut rings_go = GameObjectBuilder::new()
+                    .with_name(format!("{} {}", x.name, "rings"))
+                    .with_render_object(rings)
+                    .with_tags(vec!["Ring".to_string()]);
+                self.build_game_object(rings_go);
+
             }
 
         }
-
-
         // Creating spaceship model
         let cabin = render::object::ObjectBuilder::new()
             .with_model("./assets/models/spaceship_cabin.obj".to_string())
             .with_texture("./assets/textures/spaceship_cockpit.png".to_string())
             .build(window);
 
-        let count = self.get_go_count() + 1;
-        let mut go_cabin = GameObject::new(count, "Cabin".to_string());
-        go_cabin.set_render_object(cabin);
-        go_cabin.set_position(Point3::new(0.0,-1.5,-1.0));
-        self.objects.insert(count, go_cabin);
+        let mut go_cabin = GameObjectBuilder::new()
+            .with_name("Cabin".to_string())
+            .with_render_object(cabin);
+        self.build_game_object(go_cabin);
 
         let background = render::object::ObjectBuilder::new()
             .with_model("./assets/models/background.obj".to_string())
@@ -102,16 +110,21 @@ impl Universe{
             .with_shader("solid".to_string())
             .build_with_texture(&window, support::image_m::gen_background_texture(&[0, 0, 0], &window.draw_context.display));
 
-        let count = self.get_go_count() + 1;
-        let mut go_background = GameObject::new(count, "Background".to_string());
-        go_background.set_render_object(background);
-        self.objects.insert(count, go_background);
+        let mut go_background = GameObjectBuilder::new()
+            .with_name("Background".to_string())
+            .with_render_object(background);
+        self.build_game_object(go_background);
 
     }
     //Create new game object with id and name
     pub fn add_game_object(&mut self, id: u32, name: String){
         let obj = GameObject::new(id, String::new());
         self.objects.insert(id, obj);
+    }
+    pub fn build_game_object(&mut self, builder: GameObjectBuilder){
+        let count = self.get_go_count() + 1;
+        let object = builder.with_id(count).build();
+        self.objects.insert(count, object);
     }
     pub fn get_go_count(&self) -> u32{
         self.objects.len() as u32
@@ -124,6 +137,7 @@ impl Universe{
     pub fn try_get_go(&mut self, id: u32) -> Option<&mut GameObject>{
         self.objects.get_mut(&id)
     }
+    //Returns game object with the same name
     pub fn get_go_by_name(&mut self, name: String) -> Option<&mut GameObject>{
         for (id, x) in &mut self.objects {
             if x.name == name{
@@ -132,8 +146,20 @@ impl Universe{
         }
         None
     }
+    //Returns game objects with the same tag
+    pub fn get_go_by_tag(&mut self, tag: String) -> Vec<&mut GameObject>{
+        let mut objects = vec![];
+        for (id, x) in &mut self.objects {
+            if x.tags.contains(&tag){
+                objects.push(x);
+            }
+        }
+        objects
+    }
     // Updating universe
     pub fn update(&mut self, window: &mut render::Window){
+        //Update controls
+        self.controls.update(window);
         match self.player{
             Some(ref mut x) => {
                 x.update(self.seed);
@@ -142,38 +168,6 @@ impl Universe{
                 ()
             }
         }
-        //Update controls
-        self.controls.update(window);
-        // Copy controls info
-        let controls = self.controls;
-        //FIXME: Might be bad way to update background position
-        let mut bg_pos = Point3::new(0.0, 0.0, 0.0);
-        // Set cabin position
-        match self.get_go_by_name("Cabin".to_string()){
-            Some(ref mut cabin) => {
-                //Update cabin position
-                let (mut cabin_pos, _) = game::cabin::cabin_update(cabin, window, &controls);
-                //Calculate camera rotation
-                let camera_rotation = UnitQuaternion::from_euler_angles((controls.rel.1 / 100.0), (controls.rel.0 / 100.0), controls.roll).quaternion().into_owned();
-                //Set camera pos/rot
-                window.draw_context.camera.set_pos(cabin_pos);
-                window.draw_context.camera.set_rot(camera_rotation);
-                //Copy cabin pos into background pos
-                bg_pos = cabin_pos;
-            },
-            _ => {}
-        }
-        // Set background position
-        match self.get_go_by_name("Background".to_string()){
-            Some(ref mut bg) => {
-                bg.set_position(bg_pos);
-            },
-            _ => {}
-        }
-        // Call Update on objects
-        let objects = &mut self.objects;
-        for (_, x) in objects{
-            x.update()
-        }
+
     }
 }

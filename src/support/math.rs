@@ -45,10 +45,10 @@ pub fn lerp(val1: f32, val2: f32, t: f32) -> f32{
 }
 
 pub fn calculate_transform(pos: Point3<f32>, rot: Quaternion<f32>, scale: (f32, f32, f32)) -> Matrix4<f32>{
-    let scale_matrix = Matrix4::new(
-        scale.0, 0.0, 0.0, 0.0,
-        0.0, scale.1, 0.0, 0.0,
-        0.0, 0.0, scale.2, 0.0,
+    let scale_matrix: Matrix4<f32> = Matrix4::new(
+        scale.0 as f32, 0.0, 0.0, 0.0,
+        0.0, scale.1 as f32, 0.0, 0.0,
+        0.0, 0.0, scale.2 as f32, 0.0,
         0.0, 0.0, 0.0, 1.0,
     );
     let translation_matrix = Translation3::from_vector(pos.coords).to_homogeneous();

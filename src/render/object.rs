@@ -13,6 +13,7 @@ pub struct Object{
     pub transform: Matrix4<f32>,
     pub tex_wrap: (f32, f32),
     pub scale: (f32, f32, f32),
+    pub enabled: bool,
     pub shader: String
 }
 
@@ -24,6 +25,7 @@ impl Object{
             transform: math::calculate_transform(Point3::new(0.0,0.0,0.0), Quaternion::new(0.0,0.0,0.0,0.0), scale),
             tex_wrap: (0.0,0.0),
             scale: scale,
+            enabled: true,
             shader: shader
         }
     }
@@ -48,6 +50,7 @@ pub struct ObjectBuilder{
     pub transform: Matrix4<f32>,
     pub tex_wrap: (f32, f32),
     pub scale: (f32, f32, f32),
+    pub enabled: bool,
     pub shader: String
 }
 // A easy way to construct game object. P.S Performance is really bad
@@ -61,6 +64,7 @@ impl ObjectBuilder{
             transform: math::calculate_transform(Point3::new(0.0,0.0,0.0), Quaternion::new(0.0,0.0,0.0,0.0), (0.1, 0.1, 0.1)),
             tex_wrap: (0.0,0.0),
             scale: (0.1, 0.1, 0.1),
+            enabled: true,
             shader: "simple".to_string()
         }
     }
@@ -95,6 +99,12 @@ impl ObjectBuilder{
             ..self
         }
     }
+    pub fn with_enabled(self, enabled: bool) -> Self{
+        ObjectBuilder{
+            enabled,
+            ..self
+        }
+    }
     pub fn build(self, window: &Window) -> Object{
         let model = support::obj_loader::load_as_vb(self.model, &window.draw_context.display);
         let texture = support::texture_loader::load(self.texture, &window.draw_context.display);
@@ -104,6 +114,7 @@ impl ObjectBuilder{
             transform: self.transform,
             tex_wrap: self.tex_wrap,
             scale: self.scale,
+            enabled: self.enabled,
             shader: self.shader,
         }
     }
@@ -114,6 +125,7 @@ impl ObjectBuilder{
             transform: self.transform,
             tex_wrap: self.tex_wrap,
             scale: self.scale,
+            enabled: self.enabled,
             shader: self.shader,
         }
     }
@@ -125,6 +137,7 @@ impl ObjectBuilder{
             transform: self.transform,
             tex_wrap: self.tex_wrap,
             scale: self.scale,
+            enabled: self.enabled,
             shader: self.shader,
         }
     }
@@ -136,6 +149,7 @@ impl ObjectBuilder{
             transform: self.transform,
             tex_wrap: self.tex_wrap,
             scale: self.scale,
+            enabled: self.enabled,
             shader: self.shader,
         }
     }

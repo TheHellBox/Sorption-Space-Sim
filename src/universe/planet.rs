@@ -29,14 +29,14 @@ static ocean_colors: [(f32, f32, f32); 3] = [
 //Moon
 (1.0, 1.0, 1.0)
 ];
-
+#[derive(Debug)]
 pub struct Planet{
     pub num: usize,
     pub planet_type: u32,
     pub name: String,
     pub temperature: i32,
     pub orbit: u32,
-    pub area: (u32, u32),
+    pub area: (i32, i32),
     pub seed: [usize; 3],
     pub rings: bool,
     pub moons: Vec<Planet>
@@ -48,9 +48,9 @@ impl Planet{
         let mut rng: StdRng = SeedableRng::from_seed(seed);
         let pl_type = rng.gen_range(0, 3);
         let name = gen_name(seed, star_name);
-        let orbit = rng.gen_range(0, 30);
-
-        let area = (rng.gen_range(0, 100), rng.gen_range(0, 100));
+        let orbit = rng.gen_range(0, 10);
+        println!("{:?}", orbit);
+        let area = (rng.gen_range(0, 10), rng.gen_range(0, 10));
 
         let temperature = (100 - orbit * 10) + (surf_temperature / 100);
         let moons = vec![];
@@ -59,7 +59,7 @@ impl Planet{
             1 => true,
             _ => false
         };
-        
+
         Planet{
             num: num,
             planet_type: pl_type,

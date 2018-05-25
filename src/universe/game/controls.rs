@@ -87,7 +87,7 @@ impl Controls{
                     WindowEvent::MouseWheel {device_id: _, delta, ..} => {
                         match delta{
                             glutin::MouseScrollDelta::LineDelta(h, v) => {
-                                self.speed_mod += v;
+                                self.speed_mod += v as f32;
                                 if self.speed_mod < 1.0{
                                     self.speed_mod = 1.0;
                                 }

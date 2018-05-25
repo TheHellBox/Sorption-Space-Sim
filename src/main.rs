@@ -35,22 +35,22 @@ fn main() {
     let openhmd = openhmd::OpenHMD::new();
     // And here we init game
     println!("\nWelcome to yet another space sim! We are already created commader for you: \n");
-    let mut universe = universe::Universe::new([0, 0, 0, 1]);
+    let mut game = universe::game::Game::new(&mut window);
+
     let mut player = player::Player::new("The HellBox".to_string(), 0, (0,0,0), HashMap::new());
     // Move player to the universe
-    universe.set_player(player);
+    game.universe.set_player(player);
 
-    universe.init(&mut window);
     let vr = false;
 
     //Starting the main loop0
     'main: loop{
         openhmd.context.update();
         window.update();
-        universe.update(&mut window);
+        game.update(&mut window);
         match vr{
-            true => window.draw_context.draw_vr(&params, &universe, &openhmd),
-            false => window.draw_context.draw(&params, &universe)
+            true => window.draw_context.draw_vr(&params, &game, &openhmd),
+            false => window.draw_context.draw(&params, &game)
         }
         //println!("{:?}", window.draw_context.render_data.get_mut(&1).unwrap().rotation);
     }
