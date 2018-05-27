@@ -29,28 +29,22 @@ pub fn cabin_update(universe: &mut Universe, window: &mut Window) -> (Point3<f32
             let rot = rotation.lerp(&UnitQuaternion::from_euler_angles((controls.rel.1 / 100.0), (controls.rel.0 / 100.0), controls.roll), 0.04);
             let mut cabin_pos = Point3::new(position[0] + direcion[0], position[1] + direcion[1], position[2] + direcion[2]);
 
-            let mut area = (0, 0);
+            let mut area = [0, 0, 0];
 
-            if cabin_pos[0] > 10000.0{
-                area.0 += 1;
-                cabin_pos[0] = -10000.0;
-            }
-            if cabin_pos[0] < -10000.0{
-                area.0 -= 1;
-                cabin_pos[0] = 10000.0;
+            for x in 0..3{
+                if cabin_pos[x] > 10000.0{
+                    area[x] += 1;
+                    cabin_pos[x] = -10000.0;
+                }
+                if cabin_pos[x] < -10000.0{
+                    area[x] -= 1;
+                    cabin_pos[x] = 10000.0;
+                }
             }
 
-            if cabin_pos[2] > 10000.0{
-                area.1 += 1;
-                cabin_pos[2] = -10000.0;
-            }
-            if cabin_pos[2] < -10000.0{
-                area.1 -= 1;
-                cabin_pos[2] = 10000.0;
-            }
             cabin.set_rotation(rot);
             cabin.set_position(cabin_pos);
-            (cabin_pos, rot, area)
+            (cabin_pos, rot, (area[0], area[1]))
         },
         _ => {
             (Point3::new(0.0, 0.0, 0.0), Quaternion::new(0.0,0.0,1.0,0.0), (0, 0))

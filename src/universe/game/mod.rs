@@ -1,5 +1,6 @@
 pub mod controls;
 pub mod cabin;
+pub mod area_checker;
 
 use universe;
 use render;
@@ -34,11 +35,17 @@ impl Game{
             },
             _ => {}
         }
+
+        if area != (0, 0){
+            area_checker::check_area(area, &mut self.universe);
+        }
+
         // Call Update on objects
         let objects = &mut self.universe.objects;
         for (_, x) in objects{
             x.update()
         }
+
         match self.universe.player{
             Some(ref mut x) => {
                 x.area.0 += area.0;

@@ -72,6 +72,7 @@ impl Universe{
             let mut go_planet = GameObjectBuilder::new()
                 .with_name((&x.name).to_owned())
                 .with_render_object(planet)
+                .with_area(x.area)
                 .with_tags(vec!["Planet".to_string()]);
 
             self.build_game_object(go_planet);
@@ -87,7 +88,8 @@ impl Universe{
                 let mut rings_go = GameObjectBuilder::new()
                     .with_name(format!("{} {}", x.name, "rings"))
                     .with_render_object(rings)
-                    .with_tags(vec!["Ring".to_string()]);
+                    .with_tags(vec!["Ring".to_string()])
+                    .with_area(x.area);
                 self.build_game_object(rings_go);
 
             }
@@ -151,6 +153,16 @@ impl Universe{
         let mut objects = vec![];
         for (id, x) in &mut self.objects {
             if x.tags.contains(&tag){
+                objects.push(x);
+            }
+        }
+        objects
+    }
+    //Returns game objects with the same area
+    pub fn get_go_by_area(&mut self, area: (i32, i32)) -> Vec<&mut GameObject>{
+        let mut objects = vec![];
+        for (id, x) in &mut self.objects {
+            if x.area == area{
                 objects.push(x);
             }
         }

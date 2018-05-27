@@ -16,7 +16,9 @@ pub struct GameObject{
     // Parent ID
     pub childs: Vec<GameObject>,
 
-    pub tags: Vec<String>
+    pub tags: Vec<String>,
+
+    pub area: (i32, i32)
 }
 
 impl GameObject{
@@ -29,7 +31,8 @@ impl GameObject{
             position: Point3::new(0.0,0.0,0.0),
             rotation: UnitQuaternion::from_quaternion(Quaternion::new(0.0,0.0,1.0,0.0)),
             childs: vec![],
-            tags: vec![]
+            tags: vec![],
+            area: (0, 0)
         }
     }
     // Set parent of the game object
@@ -55,6 +58,9 @@ impl GameObject{
     }
     pub fn up(&mut self) -> Vector3<f32>{
         self.direction(Vector3::new(0.0, 1.0, 0.0))
+    }
+    pub fn set_area(&mut self, area: (i32, i32)){
+        self.area = area;
     }
     pub fn direction(&mut self, vec: Vector3<f32>) -> Vector3<f32>{
         use alga::linear::Transformation;
@@ -106,7 +112,9 @@ pub struct GameObjectBuilder{
     // Parent ID
     pub childs: Vec<GameObject>,
 
-    pub tags: Vec<String>
+    pub tags: Vec<String>,
+
+    pub area: (i32, i32)
 }
 impl GameObjectBuilder{
     pub fn new() -> GameObjectBuilder{
@@ -117,7 +125,8 @@ impl GameObjectBuilder{
             position: Point3::new(0.0, 0.0, 0.0),
             rotation: UnitQuaternion::from_quaternion(Quaternion::new(0.0,0.0,1.0,0.0)),
             childs: vec![],
-            tags: vec![]
+            tags: vec![],
+            area: (0, 0)
         }
     }
     pub fn with_id(self, id: u32) -> Self{
@@ -162,6 +171,12 @@ impl GameObjectBuilder{
             ..self
         }
     }
+    pub fn with_area(self, area: (i32, i32)) -> Self{
+        GameObjectBuilder{
+            area,
+            ..self
+        }
+    }
     pub fn build(self) -> GameObject{
         GameObject{
             id: self.id,
@@ -170,7 +185,8 @@ impl GameObjectBuilder{
             position: self.position,
             rotation: self.rotation,
             childs: self.childs,
-            tags: self.tags
+            tags: self.tags,
+            area: self.area
         }
     }
 }
