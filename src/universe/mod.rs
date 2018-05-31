@@ -66,7 +66,7 @@ impl Universe{
             let planet = render::object::ObjectBuilder::new()
                 .with_model("./assets/models/planet.obj".to_string())
                 .with_enabled(enabled)
-                .with_scale((400.0, 400.0, 400.0))
+                .with_scale((x.scale, x.scale, x.scale))
                 .build_with_texture(&window, x.gen_tex(&window.draw_context.display));
 
             let mut go_planet = GameObjectBuilder::new()

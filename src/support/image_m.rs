@@ -5,6 +5,10 @@ use support;
 use noise::{NoiseFn, Perlin, Seedable, Value};
 use noise::utils::*;
 use nalgebra::clamp;
+use scarlet::colors::hslcolor::HSLColor;
+use scarlet::color::{RGBColor, Color};
+use scarlet::coord::Coord;
+use scarlet::illuminants::Illuminant;
 
 // Really bad code
 pub fn gen_planet_texture(seed: &[usize], disp: &Display, surf_color: (f32, f32, f32), oc_color: (f32, f32, f32)) -> Texture2d{
@@ -56,22 +60,26 @@ pub fn gen_background_texture(seed: &[usize], disp: &Display) -> Texture2d{
     let bg_color = (1.0, 1.0, 1.0);
 
     let perlin = Perlin::new();
+    let perlin = perlin.set_seed((seed[0] + seed[1] + seed[2]) as u32);
+
     let value = Value::new();
     let value = value.set_seed((seed[0] + seed[1] + seed[2]) as u32);
 
-    let background_noise = SphereMapBuilder::new(&value)
+    let cloud_noise = SphereMapBuilder::new(&perlin)
         .set_size(s_x, s_y)
-        .set_bounds(-9000.0, 9000.0, -18000.0, 18000.0)
+        .set_bounds(-90.0, 90.0, -180.0, 180.0)
         .build();
 
     let mut background_tex: ImageBuffer<Rgb<u8>, Vec<u8>> = ImageBuffer::new(s_x as u32, s_y as u32);
     for x in 0..s_x{
         for y in 0..s_y{
-            let bg_px = background_noise.get_value(x, y);
+            let cloud_noise = cloud_noise.get_value(x, y);
 
-            let bg_px = bg_px;
+            let bg_px = (clamp((cloud_noise) * 0.5 + 0.5, 0.0, 1.0) * 360.0) as f64;
 
-            let pix = Rgb([(bg_px * bg_color.0) as u8, (bg_px * bg_color.1) as u8, (bg_px * bg_color.2) as u8]);
+            let hsl_px = HSLColor{h: bg_px, s: 0.2, l: 0.2}.to_xyz(Illuminant::D50);
+            let hsl_px = RGBColor::from_xyz( hsl_px );
+            let pix = Rgb([(hsl_px.r * 255.0) as u8, (hsl_px.g * 255.0) as u8, (hsl_px.b * 255.0) as u8]);
 
 
             background_tex.put_pixel(x as u32, y as u32, pix);

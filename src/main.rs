@@ -7,6 +7,7 @@ extern crate alga;
 extern crate image;
 extern crate openhmd_rs;
 extern crate noise;
+extern crate scarlet;
 
 mod universe;
 mod player;

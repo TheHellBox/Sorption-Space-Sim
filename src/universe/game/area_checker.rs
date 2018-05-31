@@ -17,7 +17,7 @@ pub fn check_area(ch_area: (i32, i32), universe: &mut Universe){
     for obj in universe.get_go_by_area(area_old){
         match obj.render_object{
             Some(ref mut x) => {
-                if obj.tags.contains(&"Planet".to_string()){
+                if obj.tags.contains(&"Planet".to_string()) || obj.tags.contains(&"Rings".to_string()){
                     x.enabled = false;
                 }
             }
@@ -25,10 +25,12 @@ pub fn check_area(ch_area: (i32, i32), universe: &mut Universe){
         }
     }
     println!("{:?}", area);
-    for x in universe.get_go_by_area(area){
-        match x.render_object{
+    for obj in universe.get_go_by_area(area){
+        match obj.render_object{
             Some(ref mut x) => {
-                x.enabled = true;
+                if obj.tags.contains(&"Planet".to_string()) || obj.tags.contains(&"Rings".to_string()){
+                    x.enabled = true;
+                }
             }
             None => {}
         }

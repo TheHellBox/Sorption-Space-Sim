@@ -39,21 +39,23 @@ pub struct Planet{
     pub area: (i32, i32),
     pub seed: [usize; 3],
     pub rings: bool,
+    pub scale: f32,
     pub moons: Vec<Planet>
 }
 
 impl Planet{
     pub fn gen(num: usize, seed: &[usize], surf_temperature: u32, star_name: String) -> Planet{
+
         let seed: &[usize] = &[seed[0] + num, seed[1] + num, seed[2] + num];
         let mut rng: StdRng = SeedableRng::from_seed(seed);
-        let pl_type = rng.gen_range(0, 3);
+        let planet_type = rng.gen_range(0, 3);
         let name = gen_name(seed, star_name);
         let orbit = rng.gen_range(0, 10);
-        println!("{:?}", orbit);
-        let area = (rng.gen_range(0, 10), rng.gen_range(0, 10));
-
-        let temperature = (100 - orbit * 10) + (surf_temperature / 100);
+        let area = (rng.gen_range(0, 5), rng.gen_range(0, 5));
+        let scale = rng.gen_range(0, 800) as f32;
+        let temperature = ((100 - orbit * 10) + (surf_temperature / 100)) as i32;
         let moons = vec![];
+        let seed = [seed[0], seed[1], seed[2]];
         let rings = match rng.gen_range(0, 5){
             0 => false,
             1 => true,
@@ -61,16 +63,18 @@ impl Planet{
         };
 
         Planet{
-            num: num,
-            planet_type: pl_type,
-            name: name,
-            temperature: temperature as i32,
-            orbit: orbit,
-            area: area,
-            seed: [seed[0], seed[1], seed[2]],
-            rings: rings,
-            moons: moons
+            num,
+            planet_type,
+            name,
+            temperature,
+            orbit,
+            area,
+            seed,
+            rings,
+            scale,
+            moons
         }
+
     }
     pub fn print_stats(&self){
         println!("{}", self.name);
