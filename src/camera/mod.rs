@@ -20,8 +20,8 @@ impl Camera{
             rotation: UnitQuaternion::from_quaternion(Quaternion::new(0.0,0.0,1.0,0.0)),
         }
     }
-    pub fn set_rot(&mut self, point: Quaternion<f32>){
-        self.rotation = UnitQuaternion::from_quaternion(point).inverse();
+    pub fn set_rot(&mut self, rot: UnitQuaternion<f32>){
+        self.rotation = rot.inverse();
     }
     pub fn set_pos(&mut self, point: Point3<f32>){
         self.position.vector = -point.coords;

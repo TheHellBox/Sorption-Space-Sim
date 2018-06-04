@@ -22,8 +22,8 @@ impl Game{
         // Copy controls info
         let controls = self.universe.controls;
 
-        let (mut cabin_pos, _, area) = cabin::cabin_update(&mut self.universe, window);
-        let camera_rotation = UnitQuaternion::from_euler_angles((controls.rel.1 / 100.0), (controls.rel.0 / 100.0), controls.roll).quaternion().into_owned();
+        let (mut cabin_pos, rotation, area) = cabin::cabin_update(&mut self.universe, window);
+        let camera_rotation = rotation * UnitQuaternion::from_euler_angles((window.mouse.releative.1 as f32 / 100.0), (window.mouse.releative.0 as f32 / 100.0), controls.roll).inverse();
         //Set camera pos/rot
         window.draw_context.camera.set_pos(cabin_pos);
         window.draw_context.camera.set_rot(camera_rotation);

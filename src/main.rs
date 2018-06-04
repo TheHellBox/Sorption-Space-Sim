@@ -20,7 +20,7 @@ use std::collections::HashMap;
 
 fn main() {
     // Here we init engine
-    let mut window = render::Window::new(1920, 1080, "Yet another space sim");
+    let mut window = render::Window::new(1024, 768, "Yet another space sim");
     //Building shaders
     let program = glium::Program::from_source(&window.draw_context.display, &render::std_shaders::SHADER_SIMPLE_VERT, &render::std_shaders::SHADER_SIMPLE_FRAG, None).unwrap();
     window.draw_context.render_buffer.add_shader("simple".to_string(), program);

@@ -70,15 +70,22 @@ pub fn gen_background_texture(seed: &[usize], disp: &Display) -> Texture2d{
         .set_bounds(-90.0, 90.0, -180.0, 180.0)
         .build();
 
+    /*let perlin = perlin.set_seed((seed[0] + seed[1] + seed[2]) as u32 * 3);
+    let dark_noise = SphereMapBuilder::new(&perlin)
+        .set_size(s_x, s_y)
+        .set_bounds(-90.0, 90.0, -180.0, 180.0)
+        .build();*/
+
     let mut background_tex: ImageBuffer<Rgb<u8>, Vec<u8>> = ImageBuffer::new(s_x as u32, s_y as u32);
     for x in 0..s_x{
         for y in 0..s_y{
             let cloud_noise = cloud_noise.get_value(x, y);
+            //let dark_noise = dark_noise.get_value(x, y);
 
             let bg_px = (clamp((cloud_noise) * 0.5 + 0.5, 0.0, 1.0) * 360.0) as f64;
-
             let hsl_px = HSLColor{h: bg_px, s: 0.2, l: 0.2}.to_xyz(Illuminant::D50);
             let hsl_px = RGBColor::from_xyz( hsl_px );
+
             let pix = Rgb([(hsl_px.r * 255.0) as u8, (hsl_px.g * 255.0) as u8, (hsl_px.b * 255.0) as u8]);
 
 

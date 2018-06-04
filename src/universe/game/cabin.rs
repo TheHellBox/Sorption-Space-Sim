@@ -9,7 +9,7 @@ use render::Window;
 use player::Player;
 use std::cmp::Ordering;
 
-pub fn cabin_update(universe: &mut Universe, window: &mut Window) -> (Point3<f32>, Quaternion<f32>, (i32, i32)){
+pub fn cabin_update(universe: &mut Universe, window: &mut Window) -> (Point3<f32>, UnitQuaternion<f32>, (i32, i32)){
 
     let controls = universe.controls;
 
@@ -26,7 +26,8 @@ pub fn cabin_update(universe: &mut Universe, window: &mut Window) -> (Point3<f32
             let up = (cabin.up() / 20.0) * up;
             let direcion = forward + right + up;
 
-            let rot = rotation.lerp(&UnitQuaternion::from_euler_angles((controls.rel.1 / 100.0), (controls.rel.0 / 100.0), controls.roll), 0.04);
+            cabin.rotation = rotation * UnitQuaternion::from_euler_angles((window.mouse.releative.1 as f32 / 100.0), (window.mouse.releative.0 as f32 / 100.0), controls.roll).inverse();
+
             let mut cabin_pos = Point3::new(position[0] + direcion[0], position[1] + direcion[1], position[2] + direcion[2]);
 
             let mut area = [0, 0, 0];
@@ -41,13 +42,11 @@ pub fn cabin_update(universe: &mut Universe, window: &mut Window) -> (Point3<f32
                     cabin_pos[x] = 10000.0;
                 }
             }
-
-            cabin.set_rotation(rot);
             cabin.set_position(cabin_pos);
-            (cabin_pos, rot, (area[0], area[1]))
+            (cabin_pos, cabin.rotation, (area[0], area[1]))
         },
         _ => {
-            (Point3::new(0.0, 0.0, 0.0), Quaternion::new(0.0,0.0,1.0,0.0), (0, 0))
+            (Point3::new(0.0, 0.0, 0.0), UnitQuaternion::from_quaternion(Quaternion::new(0.0,0.0,1.0,0.0)), (0, 0))
         }
     }
 }

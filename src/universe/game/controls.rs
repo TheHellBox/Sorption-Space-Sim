@@ -38,7 +38,7 @@ impl Controls{
     pub fn update(&mut self, window: &mut Window){
         use glium::glutin;
         use glium::glutin::{Event, WindowEvent};
-        let mut roll = 0.0;
+        let mut roll = -2.0;
         for ev in window.events.to_owned(){
             match ev {
                 Event::WindowEvent { event, .. } => match event {
@@ -73,10 +73,10 @@ impl Controls{
                             },
 
                             16 => {
-                                roll = modif_s;
+                                roll = -modif;
                             },
                             18 => {
-                                roll = -modif_s;
+                                roll = modif;
                             },
 
                             _ => {
@@ -100,8 +100,8 @@ impl Controls{
                 _ => {}
             }
         }
-        if roll != 0.0{
-            self.roll += roll / 20.0;
+        if roll != -2.0{
+            self.roll = roll / 20.0;
         }
         if window.focused{
             let rel = window.mouse.releative;

@@ -82,7 +82,7 @@ impl Universe{
                     .with_model("./assets/models/rings.obj".to_string())
                     .with_enabled(enabled)
                     .with_texture("./assets/textures/rings.png".to_string())
-                    .with_scale((400.0, 400.0, 400.0))
+                    .with_scale((x.scale, x.scale, x.scale))
                     .build(window);
 
                 let mut rings_go = GameObjectBuilder::new()
