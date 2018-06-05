@@ -23,3 +23,7 @@
 - [ ] Huperjumps
 - [ ] Multiplayer
 - [ ] Landing on planets
+
+<a href="https://gitlab.com/TheHellBox/Sorption-Space-Sim">GitLab mirror</a>
+
+<a href="https://github.com/TheHellBox/Sorption-Space-Sim">GitHub</a>
