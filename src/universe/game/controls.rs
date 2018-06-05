@@ -1,5 +1,4 @@
 use render::Window;
-use glium::glutin::Event;
 
 #[derive(Copy, Clone)]
 pub struct Controls{
@@ -85,7 +84,7 @@ impl Controls{
                     },
                     WindowEvent::MouseWheel {device_id: _, delta, ..} => {
                         match delta{
-                            glutin::MouseScrollDelta::LineDelta(h, v) => {
+                            glutin::MouseScrollDelta::LineDelta(_, v) => {
                                 self.speed_mod += v as f32;
                                 if self.speed_mod < 1.0{
                                     self.speed_mod = 1.0;

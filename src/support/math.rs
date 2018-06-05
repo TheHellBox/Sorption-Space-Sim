@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use nalgebra;
 use nalgebra::geometry::{Point3, UnitQuaternion, Quaternion, Translation3};
 use nalgebra::core::{Matrix4};

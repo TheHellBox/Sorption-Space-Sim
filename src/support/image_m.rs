@@ -2,12 +2,11 @@ use glium::texture::Texture2d;
 use glium::Display;
 use image::{ImageBuffer, Rgb};
 use support;
-use noise::{NoiseFn, Perlin, Seedable, Value};
+use noise::{Perlin, Seedable};
 use noise::utils::*;
 use nalgebra::clamp;
 use scarlet::colors::hslcolor::HSLColor;
 use scarlet::color::{RGBColor, Color};
-use scarlet::coord::Coord;
 use scarlet::illuminants::Illuminant;
 
 // Really bad code
@@ -57,13 +56,12 @@ pub fn gen_planet_texture(seed: &[usize], disp: &Display, surf_color: (f32, f32,
 
 pub fn gen_background_texture(seed: &[usize], disp: &Display) -> Texture2d{
     let (s_x, s_y) = (2048, 2048);
-    let bg_color = (1.0, 1.0, 1.0);
 
     let perlin = Perlin::new();
     let perlin = perlin.set_seed((seed[0] + seed[1] + seed[2]) as u32);
 
-    let value = Value::new();
-    let value = value.set_seed((seed[0] + seed[1] + seed[2]) as u32);
+    /*let value = Value::new();
+    let value = value.set_seed((seed[0] + seed[1] + seed[2]) as u32);*/
 
     let cloud_noise = SphereMapBuilder::new(&perlin)
         .set_size(s_x, s_y)

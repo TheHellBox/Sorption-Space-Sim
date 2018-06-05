@@ -3,7 +3,6 @@ pub mod std_shaders;
 pub mod object;
 
 use self::draw_context::DrawContext;
-use self::object::*;
 
 use glium;
 use glium::{glutin, Display};
@@ -54,7 +53,7 @@ impl Mouse{
         self.position = new_pos;
     }
 }
-
+#[allow(dead_code)]
 impl Window {
     pub fn new(sizex: u32, sizey: u32, title: &'static str) -> Window{
 

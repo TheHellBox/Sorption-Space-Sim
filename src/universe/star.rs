@@ -2,12 +2,6 @@ use universe::planet::Planet;
 use rand::{Rng, SeedableRng, StdRng};
 use nalgebra::geometry::Point3;
 
-pub enum StarType{
-    SubGiant = 0,
-    BrightGiant = 1,
-    DwarfStar = 2
-}
-
 pub struct Star{
     pub star_type: u32,
     pub name: String,
@@ -41,6 +35,7 @@ impl Star{
             None
         }
     }
+    #[allow(dead_code)]
     pub fn print_stats(&self){
         println!("{}:", self.name);
         println!("  Coords: {} {} {}", self.coords[0], self.coords[1], self.coords[2]);

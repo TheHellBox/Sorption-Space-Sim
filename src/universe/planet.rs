@@ -1,18 +1,9 @@
 use rand::{Rng, SeedableRng, StdRng};
-use nalgebra;
-use support;
 use glium::Display;
 use glium::texture::Texture2d;
 use support::image_m::gen_planet_texture;
 
-enum PlanetType{
-    EarthLike = 0,
-    IceDesert = 1,
-    Moon = 2
-}
-
-
-static colors: [(f32, f32, f32); 3] = [
+static COLORS: [(f32, f32, f32); 3] = [
 //EarthLike
 (0.5, 1.0, 0.5),
 //IceDesert
@@ -21,7 +12,7 @@ static colors: [(f32, f32, f32); 3] = [
 (1.0, 1.0, 1.0)
 ];
 
-static ocean_colors: [(f32, f32, f32); 3] = [
+static OCEAN_COLORS: [(f32, f32, f32); 3] = [
 //EarthLike
 (0.4, 0.4, 1.0),
 //IceDesert
@@ -29,6 +20,7 @@ static ocean_colors: [(f32, f32, f32); 3] = [
 //Moon
 (1.0, 1.0, 1.0)
 ];
+
 #[derive(Debug)]
 pub struct Planet{
     pub num: usize,
@@ -76,6 +68,7 @@ impl Planet{
         }
 
     }
+    #[allow(dead_code)]
     pub fn print_stats(&self){
         println!("{}", self.name);
         println!("  Type: {}", self.planet_type);
@@ -83,7 +76,7 @@ impl Planet{
         println!("  Temperature: {}°C", self.temperature);
     }
     pub fn gen_tex(&self, disp: &Display) -> Texture2d{
-        gen_planet_texture(&self.seed, disp, colors[self.planet_type as usize], ocean_colors[self.planet_type as usize])
+        gen_planet_texture(&self.seed, disp, COLORS[self.planet_type as usize], OCEAN_COLORS[self.planet_type as usize])
     }
 }
 

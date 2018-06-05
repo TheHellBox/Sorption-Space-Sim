@@ -17,6 +17,7 @@ pub struct Object{
     pub shader: String
 }
 
+#[allow(dead_code)]
 impl Object{
     pub fn new(model: VertexBufferAny, texture: Texture2d, scale: (f32, f32, f32), shader: String) -> Object{
         Object{
@@ -53,7 +54,8 @@ pub struct ObjectBuilder{
     pub enabled: bool,
     pub shader: String
 }
-// A easy way to construct game object. P.S Performance is really bad
+
+#[allow(dead_code)]
 impl ObjectBuilder{
     pub fn new() -> ObjectBuilder{
         let default_model = "./assets/models/cube.obj".to_string();
@@ -118,7 +120,7 @@ impl ObjectBuilder{
             shader: self.shader,
         }
     }
-    pub fn build_with_assets(self, window: &Window, model: VertexBufferAny, texture: Texture2d) -> Object{
+    pub fn build_with_assets(self, model: VertexBufferAny, texture: Texture2d) -> Object{
         Object{
             model: model,
             texture: texture,

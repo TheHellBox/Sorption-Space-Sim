@@ -11,7 +11,7 @@ pub struct Player{
     pub planet: usize,
     pub resources: HashMap<String, u32>
 }
-
+#[allow(dead_code)]
 impl Player{
     pub fn new(name: String, level: u32, star_coords: (usize, usize, usize), resources: HashMap<String, u32>) -> Player{
         Player{
@@ -68,7 +68,7 @@ impl Player{
     pub fn jump_to(&mut self, planet: usize){
         self.planet = planet;
     }
-    pub fn update(&mut self, seed: [usize; 4]){
+    pub fn update(&mut self, _seed: [usize; 4]){
         /*use std::io;
         use std::io::prelude::*;
         use nalgebra::Real;

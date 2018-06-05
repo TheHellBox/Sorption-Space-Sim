@@ -38,7 +38,7 @@ fn main() {
     println!("\nWelcome to yet another space sim! We are already created commader for you: \n");
     let mut game = universe::game::Game::new(&mut window);
 
-    let mut player = player::Player::new("The HellBox".to_string(), 0, (0,0,0), HashMap::new());
+    let player = player::Player::new("The HellBox".to_string(), 0, (0,0,0), HashMap::new());
     // Move player to the universe
     game.universe.set_player(player);
 

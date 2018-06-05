@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use render::object::Object;
 use nalgebra::geometry::{Quaternion, Point3, UnitQuaternion};
 use nalgebra::Vector3;

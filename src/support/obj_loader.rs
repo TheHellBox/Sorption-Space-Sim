@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 pub extern crate tobj;
 
 use glium;

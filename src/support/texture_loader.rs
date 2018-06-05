@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use image;
 
 use glium::texture::Texture2d;

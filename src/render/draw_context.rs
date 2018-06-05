@@ -2,11 +2,8 @@ use glium;
 use glium::{Display, Program};
 use glium::Surface;
 use std::collections::hash_map::HashMap;
-use glium::vertex::VertexBufferAny;
 use camera::Camera;
 use render::object::Object;
-use glium::texture::Texture2d;
-use universe::Universe;
 use universe::game::Game;
 use openhmd::OpenHMD;
 

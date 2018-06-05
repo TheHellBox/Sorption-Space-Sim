@@ -5,7 +5,7 @@ pub mod game;
 
 use render;
 use player;
-use nalgebra::geometry::{Point3, UnitQuaternion};
+use nalgebra::geometry::{Point3};
 use std::collections::HashMap;
 use self::game::controls::Controls;
 
@@ -24,6 +24,7 @@ pub struct Universe{
     pub events: Vec<String>
 }
 
+#[allow(dead_code)]
 impl Universe{
     // Creating universe
     pub fn new(seed: [usize; 4]) -> Universe{
@@ -101,7 +102,7 @@ impl Universe{
             .with_texture("./assets/textures/spaceship_cockpit.png".to_string())
             .build(window);
 
-        let mut go_cabin = GameObjectBuilder::new()
+        let go_cabin = GameObjectBuilder::new()
             .with_name("Cabin".to_string())
             .with_render_object(cabin);
         self.build_game_object(go_cabin);
@@ -112,7 +113,7 @@ impl Universe{
             .with_shader("solid".to_string())
             .build_with_texture(&window, support::image_m::gen_background_texture(&[0, 0, 0], &window.draw_context.display));
 
-        let mut go_background = GameObjectBuilder::new()
+        let go_background = GameObjectBuilder::new()
             .with_name("Background".to_string())
             .with_render_object(background);
         self.build_game_object(go_background);
@@ -120,7 +121,7 @@ impl Universe{
     }
     //Create new game object with id and name
     pub fn add_game_object(&mut self, id: u32, name: String){
-        let obj = GameObject::new(id, String::new());
+        let obj = GameObject::new(id, name);
         self.objects.insert(id, obj);
     }
     pub fn build_game_object(&mut self, builder: GameObjectBuilder){
@@ -141,7 +142,7 @@ impl Universe{
     }
     //Returns game object with the same name
     pub fn get_go_by_name(&mut self, name: String) -> Option<&mut GameObject>{
-        for (id, x) in &mut self.objects {
+        for (_, x) in &mut self.objects {
             if x.name == name{
                 return Some(x)
             }
@@ -151,7 +152,7 @@ impl Universe{
     //Returns game objects with the same tag
     pub fn get_go_by_tag(&mut self, tag: String) -> Vec<&mut GameObject>{
         let mut objects = vec![];
-        for (id, x) in &mut self.objects {
+        for (_, x) in &mut self.objects {
             if x.tags.contains(&tag){
                 objects.push(x);
             }
@@ -161,7 +162,7 @@ impl Universe{
     //Returns game objects with the same area
     pub fn get_go_by_area(&mut self, area: (i32, i32)) -> Vec<&mut GameObject>{
         let mut objects = vec![];
-        for (id, x) in &mut self.objects {
+        for (_, x) in &mut self.objects {
             if x.area == area{
                 objects.push(x);
             }
