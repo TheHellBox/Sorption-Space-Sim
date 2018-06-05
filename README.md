@@ -9,8 +9,8 @@
 - [ ] Universe generator
   - [x] Star/planet parameters
   - [ ] Planet surface generation
-  - [ ] Planet textures generation
-  - [ ] Space backgrounds generation
+  - [x] Planet textures generation
+  - [x] Space backgrounds generation
 - [x] Render
   - [x] Textures
   - [x] 3D Models loading

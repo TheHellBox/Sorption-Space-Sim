@@ -44,7 +44,7 @@ impl Planet{
         let name = gen_name(seed, star_name);
         let orbit = rng.gen_range(0, 10);
         let area = (rng.gen_range(0, 5), rng.gen_range(0, 5));
-        let scale = rng.gen_range(0, 800) as f32;
+        let scale = rng.gen_range(800, 3000) as f32;
         let temperature = ((100 - orbit * 10) + (surf_temperature / 100)) as i32;
         let moons = vec![];
         let seed = [seed[0], seed[1], seed[2]];

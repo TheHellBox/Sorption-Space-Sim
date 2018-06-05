@@ -89,7 +89,7 @@ impl Universe{
                 let mut rings_go = GameObjectBuilder::new()
                     .with_name(format!("{} {}", x.name, "rings"))
                     .with_render_object(rings)
-                    .with_tags(vec!["Ring".to_string()])
+                    .with_tags(vec!["Rings".to_string()])
                     .with_area(x.area);
                 self.build_game_object(rings_go);
 
