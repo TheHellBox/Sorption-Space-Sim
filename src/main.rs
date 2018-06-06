@@ -8,6 +8,7 @@ extern crate image;
 extern crate openhmd_rs;
 extern crate noise;
 extern crate scarlet;
+extern crate rusttype;
 
 mod universe;
 mod player;
@@ -34,11 +35,15 @@ fn main() {
     let params = render::get_params();
 
     let openhmd = openhmd::OpenHMD::new();
+
+    window.font_engine.load_font("./Roboto-Medium.ttf".to_string(), &window.draw_context.display);
+
     // And here we init game
     println!("\nWelcome to yet another space sim! We are already created commader for you: \n");
     let mut game = universe::game::Game::new(&mut window);
 
     let player = player::Player::new("The HellBox".to_string(), 0, (0,0,0), HashMap::new());
+
     // Move player to the universe
     game.universe.set_player(player);
 

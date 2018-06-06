@@ -41,6 +41,16 @@ impl GameObject{
     pub fn add_child(&mut self, child: GameObject){
         self.childs.push(child);
     }
+    //Get go childs
+    pub fn get_childs(&mut self) -> Vec<&mut GameObject>{
+        let mut childs = vec![];
+        for x in &mut self.childs{
+            for x in x.get_childs(){
+                childs.push(x);
+            }
+        }
+        childs
+    }
     // Set render object (render::object::Object)
     pub fn set_render_object(&mut self, object: Object){
         self.render_object = Some(object);

@@ -63,6 +63,7 @@ impl Universe{
         for x in star.planets{
             println!("{:?}", x);
             let enabled = x.area == area;
+
             // Creating planet model
             let planet = render::object::ObjectBuilder::new()
                 .with_model("./assets/models/planet.obj".to_string())
@@ -70,31 +71,36 @@ impl Universe{
                 .with_scale((x.scale, x.scale, x.scale))
                 .build_with_texture(&window, x.gen_tex(&window.draw_context.display));
 
-            let mut go_planet = GameObjectBuilder::new()
+            let mut go_planet = match x.rings{
+                true => {
+                    let rings = render::object::ObjectBuilder::new()
+                        .with_model("./assets/models/rings.obj".to_string())
+                        .with_enabled(enabled)
+                        .with_texture("./assets/textures/rings.png".to_string())
+                        .with_scale((x.scale, x.scale, x.scale))
+                        .build(window);
+
+                    let mut rings_go = GameObjectBuilder::new()
+                        .with_name(format!("{} {}", x.name, "rings"))
+                        .with_render_object(rings)
+                        .with_tags(vec!["Rings".to_string()])
+                        .with_area(x.area)
+                        .build();
+
+                    GameObjectBuilder::new()
+                        .with_name((&x.name).to_owned())
+                        .with_render_object(planet)
+                        .with_area(x.area)
+                        .with_childs(vec![rings_go])
+                        .with_tags(vec!["Planet".to_string()])
+                },
+                false => GameObjectBuilder::new()
                 .with_name((&x.name).to_owned())
                 .with_render_object(planet)
                 .with_area(x.area)
-                .with_tags(vec!["Planet".to_string()]);
-
+                .with_tags(vec!["Planet".to_string()])
+            };
             self.build_game_object(go_planet);
-            if x.rings {
-                // Creating rings model
-                let rings = render::object::ObjectBuilder::new()
-                    .with_model("./assets/models/rings.obj".to_string())
-                    .with_enabled(enabled)
-                    .with_texture("./assets/textures/rings.png".to_string())
-                    .with_scale((x.scale, x.scale, x.scale))
-                    .build(window);
-
-                let mut rings_go = GameObjectBuilder::new()
-                    .with_name(format!("{} {}", x.name, "rings"))
-                    .with_render_object(rings)
-                    .with_tags(vec!["Rings".to_string()])
-                    .with_area(x.area);
-                self.build_game_object(rings_go);
-
-            }
-
         }
         // Creating spaceship model
         let cabin = render::object::ObjectBuilder::new()
@@ -169,6 +175,17 @@ impl Universe{
         }
         objects
     }
+    /*pub fn get_gameobjects(&mut self) -> Vec<&mut GameObject>{
+        let mut objects = vec![];
+        let objects_m = &mut self.objects;
+        for (_, x) in objects_m{
+            for child in x.get_childs(){
+                objects.push(child);
+            }
+            objects.push(x);
+        }
+        objects
+    }*/
     // Updating universe
     pub fn update(&mut self, window: &mut render::Window){
         //Update controls

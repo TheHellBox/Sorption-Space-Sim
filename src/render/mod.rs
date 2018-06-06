@@ -9,7 +9,7 @@ use glium::{glutin, Display};
 use glium::glutin::{ContextBuilder, EventsLoop, WindowBuilder};
 use glium::glutin::Event;
 use std::collections::hash_map::HashMap;
-
+use support::font_loader::FontEngine;
 use camera::Camera;
 
 #[derive(Copy, Clone)]
@@ -37,7 +37,8 @@ pub struct Window{
     pub events: Vec<Event>,
     pub focused: bool,
     pub res: (u32, u32),
-    pub mouse: Mouse
+    pub mouse: Mouse,
+    pub font_engine: FontEngine
 }
 
 impl Mouse{
@@ -83,7 +84,8 @@ impl Window {
             events: vec![],
             focused: true,
             res: (sizex, sizey),
-            mouse: Mouse::new()
+            mouse: Mouse::new(),
+            font_engine: FontEngine::new()
         }
     }
 

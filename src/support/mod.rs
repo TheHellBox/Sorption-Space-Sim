@@ -1,6 +1,7 @@
+pub mod texture_loader;
+pub mod font_loader;
 pub mod obj_loader;
 pub mod math;
-pub mod texture_loader;
 pub mod image_m;
 /*
 pub struct Settings{
