@@ -11,7 +11,7 @@ use glium::glutin::Event;
 use std::collections::hash_map::HashMap;
 use support::font_loader::FontEngine;
 use camera::Camera;
-
+use gui::Gui;
 #[derive(Copy, Clone)]
 pub struct Vertex {
     pub position: [f32; 3],
@@ -21,10 +21,10 @@ pub struct Vertex {
 implement_vertex!(Vertex, position, normal, tex_coords);
 
 #[derive(Copy, Clone)]
-pub struct OhmdVertex {
+pub struct Vertex2D {
     pub coords: [f32; 2],
 }
-implement_vertex!(OhmdVertex, coords);
+implement_vertex!(Vertex2D, coords);
 
 pub struct Mouse{
     pub position: (i32, i32),
@@ -38,7 +38,8 @@ pub struct Window{
     pub focused: bool,
     pub res: (u32, u32),
     pub mouse: Mouse,
-    pub font_engine: FontEngine
+    pub font_engine: FontEngine,
+    pub gui_manager: Gui
 }
 
 impl Mouse{
@@ -71,6 +72,8 @@ impl Window {
 
         let camera = Camera::new(sizex, sizey);
 
+        let gui_mngr = Gui{buttons: vec![]};
+
         Window{
             events_loop: events_loop,
             draw_context: DrawContext{
@@ -85,7 +88,8 @@ impl Window {
             focused: true,
             res: (sizex, sizey),
             mouse: Mouse::new(),
-            font_engine: FontEngine::new()
+            font_engine: FontEngine::new(),
+            gui_manager: gui_mngr
         }
     }
 
@@ -134,6 +138,7 @@ pub fn get_params() -> glium::DrawParameters<'static>{
             .. Default::default()
         },
         backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockwise,
+        blend: glium::draw_parameters::Blend::alpha_blending(),
         .. Default::default()
     }
 }

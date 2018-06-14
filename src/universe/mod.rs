@@ -124,6 +124,21 @@ impl Universe{
             .with_render_object(background);
         self.build_game_object(go_background);
 
+        for (id, x) in &window.font_engine.glyph_list{
+
+            let text = render::object::ObjectBuilder::new()
+                .with_model("./assets/models/plane.obj".to_string())
+                .with_scale((20.0, 20.0, 20.0))
+                .with_shader("solid".to_string())
+                .build_with_texture(&window, support::texture_loader::into_texture_rgba(x, &window.draw_context.display));
+
+            let go_text = GameObjectBuilder::new()
+                .with_name("Text".to_string())
+                .with_render_object(text)
+                .with_position(Point3::new(id.1 as f32 * 100.0, 0.0, 0.0));
+            self.build_game_object(go_text);
+
+        }
     }
     //Create new game object with id and name
     pub fn add_game_object(&mut self, id: u32, name: String){

@@ -31,4 +31,8 @@ impl Camera{
         let mat = rotation * translation_matrix;
         mat
     }
+    pub fn rot_view(&self) -> Matrix4<f32>{
+        let rotation: Matrix4<f32> = self.rotation.to_homogeneous();
+        rotation
+    }
 }

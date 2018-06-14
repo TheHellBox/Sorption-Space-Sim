@@ -18,18 +18,18 @@ pub fn load(path: String, disp: &Display) -> Texture2d{
     tex
 }
 
-pub fn into_texture(img: ImageBuffer<Rgb<u8>, Vec<u8>>, disp: &Display) -> Texture2d{
+pub fn into_texture(img: &ImageBuffer<Rgb<u8>, Vec<u8>>, disp: &Display) -> Texture2d{
     use glium::texture::RawImage2d;
     let dis = img.dimensions();
-    let glium_raw_tex = RawImage2d::from_raw_rgb_reversed(&img.into_raw(), dis);
+    let glium_raw_tex = RawImage2d::from_raw_rgb_reversed(&img.clone().into_raw(), dis);
     let tex = Texture2d::new(disp, glium_raw_tex).unwrap();
     tex
 }
 
-pub fn into_texture_rgba(img: ImageBuffer<Rgba<u8>, Vec<u8>>, disp: &Display) -> Texture2d{
+pub fn into_texture_rgba(img: &ImageBuffer<Rgba<u8>, Vec<u8>>, disp: &Display) -> Texture2d{
     use glium::texture::RawImage2d;
     let dis = img.dimensions();
-    let glium_raw_tex = RawImage2d::from_raw_rgba_reversed(&img.into_raw(), dis);
+    let glium_raw_tex = RawImage2d::from_raw_rgba_reversed(&img.clone().into_raw(), dis);
     let tex = Texture2d::new(disp, glium_raw_tex).unwrap();
     tex
 }

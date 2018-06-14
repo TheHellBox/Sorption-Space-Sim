@@ -25,7 +25,7 @@ pub struct DrawContext{
 }
 
 impl DrawContext{
-    pub fn draw(&self, params: &glium::DrawParameters, game: &Game){
+    pub fn draw(&self, params: &glium::DrawParameters, game: &Game) -> glium::Frame{
         let mut target = self.display.draw();
         target.clear_color_and_depth((0.2, 0.2, 0.4, 1.0), 1.0);
 
@@ -51,13 +51,13 @@ impl DrawContext{
                 &None => {}
             }
         }
-        target.finish().unwrap();
+        target
     }
 
-    pub fn draw_vr(&self, params: &glium::DrawParameters, game: &Game, open_hmd: &OpenHMD){
+    pub fn draw_vr(&self, params: &glium::DrawParameters, game: &Game, open_hmd: &OpenHMD) -> glium::Frame{
         use glium::texture::{DepthTexture2d, Texture2d, DepthFormat, UncompressedFloatFormat, MipmapsOption};
         use glium::framebuffer::SimpleFrameBuffer;
-        use render::OhmdVertex;
+        use render::Vertex2D;
 
         let mut target = self.display.draw();
         target.clear_color_and_depth((0.2, 0.2, 0.4, 1.0), 1.0);
@@ -111,10 +111,10 @@ impl DrawContext{
 
         let vert_buf = glium::VertexBuffer::new(&self.display,
             &[
-                OhmdVertex { coords: [ 0.0, 0.0 ]},
-                OhmdVertex { coords: [ 1.0, 0.0 ]},
-                OhmdVertex { coords: [ 1.0,  1.0 ]},
-                OhmdVertex { coords: [ 0.0,  1.0 ]},
+                Vertex2D { coords: [ 0.0, 0.0 ]},
+                Vertex2D { coords: [ 1.0, 0.0 ]},
+                Vertex2D { coords: [ 1.0,  1.0 ]},
+                Vertex2D { coords: [ 0.0,  1.0 ]},
             ]
         ).unwrap();
 
@@ -131,7 +131,7 @@ impl DrawContext{
             ).unwrap();
         }
 
-        target.finish().unwrap();
+        target
     }
 }
 

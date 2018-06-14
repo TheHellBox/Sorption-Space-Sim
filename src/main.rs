@@ -16,6 +16,7 @@ mod render;
 mod support;
 mod camera;
 mod openhmd;
+mod gui;
 
 use std::collections::HashMap;
 
@@ -36,7 +37,7 @@ fn main() {
 
     let openhmd = openhmd::OpenHMD::new();
 
-    window.font_engine.load_font("./Roboto-Medium.ttf".to_string(), &window.draw_context.display);
+    window.font_engine.load_font("./Roboto-Medium.ttf".to_string());
 
     // And here we init game
     println!("\nWelcome to yet another space sim! We are already created commader for you: \n");
@@ -49,15 +50,28 @@ fn main() {
 
     let vr = false;
 
+    window.gui_manager.buttons.push(
+        gui::widgets::Button{
+            base: gui::widgets::Widget_Base{
+                position: (0.0, 0.0),
+                size: (1.0, 1.0),
+                color: (0, 0, 0),
+                texture: support::texture_loader::load("./assets/textures/test.png".to_string(), &window.draw_context.display)
+            },
+            text: String::new()
+        }
+    );
     //Starting the main loop0
     'main: loop{
         openhmd.context.update();
         window.update();
         game.update(&mut window);
-        match vr{
+        let mut frame = match vr{
             true => window.draw_context.draw_vr(&params, &game, &openhmd),
             false => window.draw_context.draw(&params, &game)
-        }
+        };
+        window.gui_manager.draw_gui(&mut frame, &window, &params);
+        frame.finish().unwrap();
         //println!("{:?}", window.draw_context.render_data.get_mut(&1).unwrap().rotation);
     }
 }

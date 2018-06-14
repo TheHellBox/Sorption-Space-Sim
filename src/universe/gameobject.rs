@@ -13,7 +13,7 @@ pub struct GameObject{
     pub render_object: Option<Object>,
     // Global position
     pub position: Point3<f32>,
-    // Rotation of the object releative to the parent's
+
     pub rotation: UnitQuaternion<f32>,
     // Parent ID
     pub childs: Vec<GameObject>,
@@ -37,7 +37,7 @@ impl GameObject{
             area: (0, 0)
         }
     }
-    // Set parent of the game object
+
     pub fn add_child(&mut self, child: GameObject){
         self.childs.push(child);
     }

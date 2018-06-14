@@ -22,8 +22,10 @@ pub fn cabin_update(universe: &mut Universe, window: &mut Window) -> (Point3<f32
             let up = (cabin.up() / 20.0) * up;
             let direcion = forward + right + up;
 
-            cabin.rotation = rotation * UnitQuaternion::from_euler_angles(window.mouse.releative.1 as f32 / 100.0, window.mouse.releative.0 as f32 / 100.0, controls.roll).inverse();
-
+            if window.focused == true{
+                cabin.rotation = rotation * UnitQuaternion::from_euler_angles(window.mouse.releative.1 as f32 / 100.0, window.mouse.releative.0 as f32 / 100.0, controls.roll).inverse();
+            }
+            
             let mut cabin_pos = Point3::new(position[0] + direcion[0], position[1] + direcion[1], position[2] + direcion[2]);
 
             let mut area = [0, 0, 0];

@@ -51,7 +51,7 @@ pub fn gen_planet_texture(seed: &[usize], disp: &Display, surf_color: (f32, f32,
 
         }
     }
-    support::texture_loader::into_texture(planet_tex, disp)
+    support::texture_loader::into_texture(&planet_tex, disp)
 }
 
 pub fn gen_background_texture(seed: &[usize], disp: &Display) -> Texture2d{
@@ -90,5 +90,5 @@ pub fn gen_background_texture(seed: &[usize], disp: &Display) -> Texture2d{
             background_tex.put_pixel(x as u32, y as u32, pix);
         }
     }
-    support::texture_loader::into_texture(background_tex, disp)
+    support::texture_loader::into_texture(&background_tex, disp)
 }
